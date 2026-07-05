@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fate/Stay Last Time 2.0 — The Grail Archive</title>
+<meta name="description" content="Fate/Stay Last Time — an immersive visual-novel web serial. Zero-terminal, zero-build reading hub.">
+
+<!-- Fonts: Cinzel (headers) · Lora (prose) · JetBrains Mono (readouts) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<!-- Tailwind CSS (runtime CDN compiler) -->
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<!-- GSAP 3.x kinetic engine -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+<style>
+  :root{
+    --void:#0A0A0C;
+    --void-2:#0E0E12;
+    --cyan:#00F3FF;
+    --crimson:#DE2129;
+    --ether:#D1D5DB;
+    --line:rgba(255,255,255,.07);
+    --reader-fs:18px;
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    background:var(--void);
+    color:var(--ether);
+    font-family:'Lora',Georgia,serif;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  body.reader-active{overflow-x:hidden}
+
+  /* ---------- Atmospheric background ---------- */
+  .bg-grid{
+    position:fixed;inset:0;z-index:-3;
+    background-image:
+      linear-gradient(rgba(0,243,255,.025) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(0,243,255,.025) 1px,transparent 1px);
+    background-size:64px 64px;
+    mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,#000 30%,transparent 80%);
+    -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,#000 30%,transparent 80%);
+    pointer-events:none;
+  }
+  .bg-glow{position:fixed;border-radius:50%;filter:blur(120px);opacity:.16;z-index:-2;pointer-events:none}
+  .bg-glow-1{width:520px;height:520px;background:var(--cyan);top:-160px;left:-120px;animation:drift1 18s ease-in-out infinite}
+  .bg-glow-2{width:480px;height:480px;background:var(--crimson);top:30%;right:-160px;animation:drift2 22s ease-in-out infinite}
+  @keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(60px,40px)}}
+  @keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-50px,60px)}}
+
+  #scroll-progress{
+    position:fixed;top:0;left:0;height:2px;width:0;z-index:100;
+    background:linear-gradient(90deg,var(--cyan),var(--crimson));
+    box-shadow:0 0 10px var(--cyan);transition:width .08s linear;
+  }
+
+  /* ---------- Header ---------- */
+  .site-header{position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);
+    background:linear-gradient(180deg,rgba(10,10,12,.92),rgba(10,10,12,.6));
+    border-bottom:1px solid var(--line)}
+  .header-inner{max-width:1180px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+  .brand{display:flex;align-items:center;gap:12px;text-decoration:none;cursor:pointer}
+  .brand-mark{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:12px;letter-spacing:1px;
+    color:var(--cyan);border:1px solid var(--cyan);padding:5px 8px;border-radius:4px;
+    box-shadow:0 0 12px rgba(0,243,255,.25),inset 0 0 8px rgba(0,243,255,.08)}
+  .brand-text{font-family:'Cinzel',serif;font-weight:600;font-size:15px;letter-spacing:2px;color:#fff}
+  .header-progress{display:flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#9aa1ab}
+  .hp-track{width:90px;height:4px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden}
+  .hp-fill{height:100%;width:0;background:var(--crimson);box-shadow:0 0 8px var(--crimson);transition:width .5s ease}
+  .hp-pct{color:#fff;min-width:34px;text-align:right}
+
+  /* ---------- Layout ---------- */
+  main{max-width:1180px;margin:0 auto;padding:0 24px}
+  .view{padding-bottom:90px}
+
+  /* ---------- Hero ---------- */
+  .hero{padding:84px 0 56px;text-align:center;position:relative}
+  .hero-kicker{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:4px;
+    color:var(--cyan);padding:6px 14px;border:1px solid rgba(0,243,255,.3);border-radius:999px;
+    background:rgba(0,243,255,.04);margin-bottom:26px}
+  .hero-title{font-family:'Cinzel',serif;font-weight:700;line-height:.95;margin:0;
+    font-size:clamp(44px,9vw,104px);letter-spacing:2px}
+  .hero-title span{display:block;color:#fff;text-shadow:0 0 40px rgba(0,243,255,.18)}
+  .hero-title-2{
+    background:linear-gradient(180deg,#fff 0%,var(--cyan) 130%);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    text-shadow:none}
+  .hero-sub{max-width:560px;margin:26px auto 0;font-family:'Lora',serif;font-style:italic;
+    color:#a7aeb8;font-size:16px;line-height:1.8}
+  .hero-actions{margin-top:34px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+
+  .btn{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;letter-spacing:1.5px;
+    padding:13px 22px;border-radius:6px;cursor:pointer;border:1px solid transparent;
+    transition:all .25s ease;text-transform:uppercase}
+  .btn-primary{background:var(--crimson);color:#fff;box-shadow:0 0 22px rgba(222,33,41,.35)}
+  .btn-primary:hover{box-shadow:0 0 32px rgba(222,33,41,.6);transform:translateY(-2px)}
+  .btn-ghost{background:transparent;color:var(--cyan);border-color:rgba(0,243,255,.4)}
+  .btn-ghost:hover{background:rgba(0,243,255,.08);border-color:var(--cyan);box-shadow:0 0 18px rgba(0,243,255,.25)}
+  .btn-sm{padding:9px 14px;font-size:11px}
+  .btn:disabled{opacity:.3;cursor:not-allowed;pointer-events:none}
+
+  /* ---------- Dashboard ---------- */
+  .dashboard{display:grid;grid-template-columns:1.1fr 1fr;gap:18px;margin:18px 0 50px}
+  .progress-card,.search-card{
+    background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,.01));
+    border:1px solid var(--line);border-radius:12px;padding:22px}
+  .pc-top,.pc-meta{display:flex;justify-content:space-between;align-items:center}
+  .pc-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:#9aa1ab}
+  .pc-pct{font-family:'Cinzel',serif;font-weight:700;font-size:26px;color:var(--cyan);text-shadow:0 0 16px rgba(0,243,255,.4)}
+  .pc-track{height:8px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden;margin:14px 0 12px}
+  .pc-fill{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--crimson));border-radius:4px;transition:width .6s ease}
+  .pc-meta{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#7c838c}
+
+  .search-card{display:flex;align-items:center;gap:12px}
+  .search-ico{font-size:22px;color:var(--cyan)}
+  #search-input{flex:1;background:transparent;border:none;outline:none;color:#fff;
+    font-family:'Lora',serif;font-size:15px}
+  #search-input::placeholder{color:#6b7178;font-style:italic}
+  .search-hint{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--crimson);white-space:nowrap}
+
+  /* ---------- Archive ---------- */
+  .volume-block{margin-bottom:46px}
+  .volume-head{display:flex;align-items:baseline;gap:16px;margin-bottom:20px;border-bottom:1px solid var(--line);padding-bottom:14px}
+  .volume-numeral{font-family:'Cinzel',serif;font-weight:700;font-size:30px;color:var(--crimson);text-shadow:0 0 18px rgba(222,33,41,.4)}
+  .volume-title{font-family:'Cinzel',serif;font-weight:600;font-size:18px;letter-spacing:2px;color:#fff;text-transform:uppercase}
+  .volume-count{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#7c838c}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+
+  .card{position:relative;cursor:pointer;border-radius:12px;padding:22px;
+    background:linear-gradient(180deg,rgba(255,255,255,.028),rgba(255,255,255,.008));
+    border:1px solid var(--line);transition:transform .28s ease,border-color .28s ease,box-shadow .28s ease;overflow:hidden}
+  .card::before{content:"";position:absolute;left:0;top:0;height:100%;width:2px;background:var(--cyan);
+    transform:scaleY(0);transform-origin:top;transition:transform .3s ease}
+  .card:hover{transform:translateY(-4px);border-color:rgba(0,243,255,.4);box-shadow:0 14px 40px rgba(0,0,0,.5),0 0 24px rgba(0,243,255,.12)}
+  .card:hover::before{transform:scaleY(1)}
+  .card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .card-index{font-family:'Cinzel',serif;font-weight:700;font-size:30px;color:rgba(0,243,255,.5)}
+  .card-meta{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;color:#7c838c}
+  .card-title{font-family:'Cinzel',serif;font-weight:600;font-size:17px;letter-spacing:.5px;color:#fff;margin:0 0 10px;line-height:1.3}
+  .card-synopsis{font-family:'Lora',serif;font-size:14px;color:#a7aeb8;margin:0;line-height:1.65}
+  .card-foot{display:flex;align-items:center;justify-content:space-between;margin-top:18px}
+  .read-badge{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--crimson);border:1px solid rgba(222,33,41,.4);padding:3px 8px;border-radius:4px}
+  .card-open{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--cyan)}
+
+  .no-results{text-align:center;padding:60px 20px;font-family:'Cinzel',serif;color:#7c838c;letter-spacing:2px}
+
+  /* ---------- Reader ---------- */
+  .reader-topbar{position:sticky;top:60px;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:16px 0;margin-bottom:10px;border-bottom:1px solid var(--line);backdrop-filter:blur(8px)}
+  .reader-info{flex:1;text-align:center}
+  .reader-vol{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--cyan)}
+  .reader-tools{display:flex;gap:6px}
+  .tool-btn{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ether);background:rgba(255,255,255,.04);
+    border:1px solid var(--line);border-radius:5px;width:34px;height:34px;cursor:pointer;transition:all .2s}
+  .tool-btn:hover{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 12px rgba(0,243,255,.2)}
+
+  .reader-content{max-width:720px;margin:0 auto;padding:30px 4px 40px;font-size:var(--reader-fs)}
+  .reader-chap-head{text-align:center;margin-bottom:40px;padding-bottom:28px;border-bottom:1px solid var(--line)}
+  .rch-index{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--crimson)}
+  .rch-title{font-family:'Cinzel',serif;font-weight:700;font-size:clamp(26px,5vw,40px);letter-spacing:1px;color:#fff;margin:14px 0 12px;text-shadow:0 0 30px rgba(0,243,255,.15)}
+  .rch-meta{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#7c838c}
+
+  .prose{font-family:'Lora',serif;color:var(--ether);line-height:1.92;margin:0 0 1.35em;text-align:justify;hyphens:auto}
+  .prose:first-of-type::first-letter{font-family:'Cinzel',serif;font-size:3.1em;float:left;line-height:.8;
+    padding:6px 10px 0 0;color:var(--cyan);text-shadow:0 0 18px rgba(0,243,255,.4)}
+
+  /* keyword highlight (kinetic distortion on critical terms) */
+  .kw{color:var(--cyan);font-weight:600;text-shadow:0 0 10px rgba(0,243,255,.5)}
+
+  /* visual-novel dialogue frame */
+  .dlg{position:relative;margin:1.6em 0;padding:20px 22px 18px;border-radius:10px;
+    backdrop-filter:blur(8px);background:rgba(255,255,255,.03);border:1px solid var(--line);transition:box-shadow .3s}
+  .dlg-speaker{position:absolute;top:-11px;left:18px;font-family:'Cinzel',serif;font-weight:600;
+    font-size:12px;letter-spacing:2px;text-transform:uppercase;padding:2px 12px;border-radius:5px;
+    background:var(--void);border:1px solid var(--line)}
+  .dlg-text{margin:6px 0 0;font-family:'Lora',serif;font-style:italic;line-height:1.85}
+  .dlg-cyan{border-color:rgba(0,243,255,.35);box-shadow:0 0 22px rgba(0,243,255,.08)}
+  .dlg-cyan .dlg-speaker{color:var(--cyan);border-color:rgba(0,243,255,.5);box-shadow:0 0 14px rgba(0,243,255,.25)}
+  .dlg-cyan .dlg-text{color:#cfeffb}
+  .dlg-crimson{border-color:rgba(222,33,41,.4);box-shadow:0 0 22px rgba(222,33,41,.1)}
+  .dlg-crimson .dlg-speaker{color:var(--crimson);border-color:rgba(222,33,41,.6);box-shadow:0 0 14px rgba(222,33,41,.3)}
+  .dlg-crimson .dlg-text{color:#f3d4d6}
+  .dlg-neutral{border-color:var(--line)}
+  .dlg-neutral .dlg-speaker{color:#c2c8d0}
+  .dlg-neutral .dlg-text{color:#b9c0c9}
+
+  /* kinetic impact elements */
+  .impact{font-family:'Cinzel',serif;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+    text-align:center;margin:2em 0;font-size:1.32em}
+  .impact-shake{color:var(--crimson);text-shadow:0 0 12px rgba(222,33,41,.7),0 0 30px rgba(222,33,41,.3);animation:shake .42s infinite}
+  .impact-glow{color:#fff;animation:glowpulse 2.6s ease-in-out infinite}
+  .impact-expand{color:var(--cyan);text-shadow:0 0 20px rgba(0,243,255,.6);animation:expand 3.2s ease-in-out infinite}
+  @keyframes shake{
+    0%,100%{transform:translate(0,0) rotate(0)}
+    15%{transform:translate(-2px,1px) rotate(-1deg)}
+    30%{transform:translate(2px,-1px) rotate(1deg)}
+    45%{transform:translate(-2px,-1px) rotate(0)}
+    60%{transform:translate(2px,2px) rotate(1deg)}
+    75%{transform:translate(-1px,1px) rotate(-1deg)}
+    90%{transform:translate(1px,-2px) rotate(0)}
+  }
+  @keyframes glowpulse{
+    0%,100%{text-shadow:0 0 8px rgba(0,243,255,.45),0 0 22px rgba(0,243,255,.2)}
+    50%{text-shadow:0 0 18px rgba(0,243,255,.95),0 0 44px rgba(0,243,255,.55)}
+  }
+  @keyframes expand{
+    0%,100%{transform:scale(1);letter-spacing:.1em}
+    50%{transform:scale(1.05);letter-spacing:.2em}
+  }
+
+  .reader-nav{max-width:720px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:24px 4px 0;border-top:1px solid var(--line)}
+  .reader-pos{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#7c838c}
+
+  /* ---------- Footer ---------- */
+  .site-footer{border-top:1px solid var(--line);padding:26px 24px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
+    max-width:1180px;margin:0 auto;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#5e646c}
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:760px){
+    .dashboard{grid-template-columns:1fr}
+    .header-progress{display:none}
+    .reader-topbar{top:54px}
+    .brand-text{display:none}
+    .hero{padding:56px 0 36px}
+    .reader-nav{flex-wrap:wrap}
+  }
+  ::-webkit-scrollbar{width:10px}
+  ::-webkit-scrollbar-track{background:var(--void)}
+  ::-webkit-scrollbar-thumb{background:rgba(0,243,255,.2);border-radius:5px}
+  ::-webkit-scrollbar-thumb:hover{background:rgba(0,243,255,.4)}
+</style>
+</head>
+<body>
+  <div id="scroll-progress"></div>
+  <div class="bg-grid"></div>
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <!-- ============ HEADER ============ -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand" id="brand-home">
+        <span class="brand-mark">FSLT</span>
+        <span class="brand-text">FATE / STAY LAST TIME</span>
+      </div>
+      <div class="header-progress">
+        <span>PROGRESS</span>
+        <div class="hp-track"><div class="hp-fill" id="hp-fill"></div></div>
+        <span class="hp-pct" id="hp-pct">0%</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ HUB VIEW ============ -->
+    <section id="hub-view" class="view">
+      <div class="hero">
+        <span class="hero-kicker hero-line">AN ARCHIVE OF THE HOLY GRAIL WAR</span>
+        <h1 class="hero-title">
+          <span class="hero-line">FATE / STAY</span>
+          <span class="hero-line hero-title-2">LAST TIME</span>
+        </h1>
+        <p class="hero-sub hero-line">A visual-novel web serial. Seven Masters, seven Servants, and one last war for a cup that should have stayed empty.</p>
+        <div class="hero-actions hero-line">
+          <button class="btn btn-primary" id="continue-btn">CONTINUE READING</button>
+          <button class="btn btn-ghost" id="start-btn">BEGIN AT CHAPTER I</button>
+        </div>
+      </div>
+
+      <div class="dashboard">
+        <div class="progress-card">
+          <div class="pc-top">
+            <span class="pc-label">READER PROGRESS</span>
+            <span class="pc-pct" id="pc-pct">0%</span>
+          </div>
+          <div class="pc-track"><div class="pc-fill" id="pc-fill"></div></div>
+          <div class="pc-meta">
+            <span id="pc-count">0 / 0 CHAPTERS</span>
+            <span id="pc-words">0 WORDS ARCHIVED</span>
+          </div>
+        </div>
+        <div class="search-card">
+          <span class="search-ico">&#8981;</span>
+          <input id="search-input" type="text" placeholder="Search titles, synopses &amp; dialogue…" autocomplete="off" spellcheck="false">
+          <span class="search-hint" id="search-hint"></span>
+        </div>
+      </div>
+
+      <div id="archive" class="archive"></div>
+    </section>
+
+    <!-- ============ READER VIEW ============ -->
+    <section id="reader-view" class="view" hidden>
+      <div class="reader-topbar">
+        <button class="btn btn-ghost btn-sm" id="back-btn">&#8592; ARCHIVE</button>
+        <div class="reader-info"><span class="reader-vol" id="reader-vol">VOL I</span></div>
+        <div class="reader-tools">
+          <button class="tool-btn" id="font-down" title="Decrease text size">A&minus;</button>
+          <button class="tool-btn" id="font-up" title="Increase text size">A+</button>
+        </div>
+      </div>
+      <article class="reader-content" id="reader-content"></article>
+      <div class="reader-nav">
+        <button class="btn btn-ghost btn-sm" id="prev-btn">&#8592; PREVIOUS</button>
+        <span class="reader-pos" id="reader-pos"></span>
+        <button class="btn btn-ghost btn-sm" id="next-btn">NEXT &#8594;</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>FATE / STAY LAST TIME 2.0 // ZERO-TERMINAL ARCHIVE</span>
+    <span>Progress saved locally &middot; No login &middot; No tracking</span>
+  </footer>
+
+  <script src="chapters.js"></script>
+  <script>
+  (function(){
+    "use strict";
+
+    // ---------- localStorage sandbox ----------
+    const K = { read:'fslt_read_v1', last:'fslt_last_v1', font:'fslt_font_v1' };
+    const getRead  = () => { try { return JSON.parse(localStorage.getItem(K.read)) || []; } catch(e){ return []; } };
+    const setRead  = (a) => localStorage.setItem(K.read, JSON.stringify(a));
+    const getLast  = () => { const v = localStorage.getItem(K.last); return v ? Number(v) : null; };
+    const setLast  = (id) => localStorage.setItem(K.last, String(id));
+    const getFont  = () => Number(localStorage.getItem(K.font)) || 18;
+    const setFont  = (v) => localStorage.setItem(K.font, String(v));
+    const isRead   = (id) => getRead().includes(id);
+    function markRead(id){ const r = getRead(); if(!r.includes(id)){ r.push(id); setRead(r); } }
+
+    // ---------- DOM ----------
+    const hubView     = document.getElementById('hub-view');
+    const readerView  = document.getElementById('reader-view');
+    const archive     = document.getElementById('archive');
+    const readerVol   = document.getElementById('reader-vol');
+    const readerPos   = document.getElementById('reader-pos');
+    const readerEl    = document.getElementById('reader-content');
+    const searchInput = document.getElementById('search-input');
+    const searchHint  = document.getElementById('search-hint');
+    const prevBtn     = document.getElementById('prev-btn');
+    const nextBtn     = document.getElementById('next-btn');
+    const scrollProg  = document.getElementById('scroll-progress');
+
+    // ---------- Helpers ----------
+    const pad = (n) => String(n).padStart(2,'0');
+    const wordCount = (ch) => ch.content.reduce((n,b) => n + (b.text||'').split(/\s+/).filter(Boolean).length, 0);
+    const totalWords = () => CHAPTERS.reduce((n,ch) => n + wordCount(ch), 0);
+    const progressPct = () => CHAPTERS.length ? Math.round(getRead().length / CHAPTERS.length * 100) : 0;
+
+    function escapeHtml(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    // keyword (Noble Phantasm) highlighter
+    let KW_RE = null;
+    function buildKW(){
+      if(!KEYPHRASES || !KEYPHRASES.length) return null;
+      const parts = KEYPHRASES.slice().sort((a,b)=>b.length-a.length)
+                    .map(s => s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'));
+      return new RegExp('(' + parts.join('|') + ')','gi');
+    }
+    function hl(text){
+      const esc = escapeHtml(text);
+      if(!KW_RE) KW_RE = buildKW();
+      if(!KW_RE) return esc;
+      return esc.replace(KW_RE, m => '<span class="kw">'+m+'</span>');
+    }
+
+    // ---------- Block parser ----------
+    function buildBlock(b){
+      if(b.type === 'prose'){
+        return '<p class="prose">'+hl(b.text)+'</p>';
+      }
+      if(b.type === 'dialogue'){
+        const v = ['cyan','crimson','neutral'].includes(b.variant) ? b.variant : 'cyan';
+        return '<div class="dlg dlg-'+v+'">'
+             + '<span class="dlg-speaker">'+escapeHtml(b.speaker||'')+'</span>'
+             + '<p class="dlg-text">'+hl(b.text)+'</p>'
+             + '</div>';
+      }
+      if(b.type === 'impact'){
+        const e = ['shake','glow','expand'].includes(b.effect) ? b.effect : 'shake';
+        return '<div class="impact impact-'+e+'">'+escapeHtml(b.text)+'</div>';
+      }
+      return '';
+    }
+
+    // ---------- Search / filter ----------
+    function chapterMatches(ch, q){
+      if(!q) return true;
+      q = q.toLowerCase();
+      if(ch.title.toLowerCase().includes(q)) return true;
+      if((ch.synopsis||'').toLowerCase().includes(q)) return true;
+      return ch.content.some(b => (b.text||'').toLowerCase().includes(q));
+    }
+
+    function renderHub(filter){
+      const q = (filter||'').trim();
+      const vols = [...new Set(CHAPTERS.map(c=>c.volume))];
+      let html = '';
+      let totalShown = 0;
+
+      vols.forEach(v => {
+        const list = CHAPTERS.filter(c => c.volume===v && chapterMatches(c,q));
+        if(!list.length) return;
+        totalShown += list.length;
+        const vol = VOLUMES[v] || { numeral:v, title:'' };
+        html += '<div class="volume-block">'
+             +  '<div class="volume-head">'
+             +    '<span class="volume-numeral">'+escapeHtml(vol.numeral)+'</span>'
+             +    '<span class="volume-title">'+escapeHtml(vol.title)+'</span>'
+             +    '<span class="volume-count">'+pad(list.length)+' CHAPTER'+(list.length>1?'S':'')+'</span>'
+             +  '</div><div class="grid">';
+
+        list.forEach(ch => {
+          const wc = wordCount(ch);
+          html += '<article class="card" data-id="'+ch.id+'">'
+               +  '<div class="card-top">'
+               +    '<span class="card-index">'+pad(ch.id)+'</span>'
+               +    '<span class="card-meta">'+wc.toLocaleString()+' WORDS</span>'
+               +  '</div>'
+               +  '<h3 class="card-title">'+escapeHtml(ch.title)+'</h3>'
+               +  '<p class="card-synopsis">'+escapeHtml(ch.synopsis)+'</p>'
+               +  '<div class="card-foot">'
+               +    (isRead(ch.id) ? '<span class="read-badge">&#10003; READ</span>' : '<span></span>')
+               +    '<span class="card-open">OPEN &#8594;</span>'
+               +  '</div>'
+               +  '</article>';
+        });
+        html += '</div></div>';
+      });
+
+      if(!totalShown){
+        html = '<div class="no-results">// NO CHAPTERS MATCH "'+escapeHtml(q.toUpperCase())+'" //</div>';
+        searchHint.textContent = '0 RESULTS';
+      } else {
+        searchHint.textContent = q ? (totalShown+' RESULT'+(totalShown>1?'S':'')) : '';
+      }
+
+      archive.innerHTML = html;
+      archive.querySelectorAll('.card').forEach(card => {
+        card.addEventListener('click', () => openChapter(Number(card.dataset.id)));
+      });
+
+      if(window.gsap && !q){
+        gsap.from('.card', { y:24, opacity:0, stagger:.05, duration:.5, ease:'power2.out' });
+      }
+    }
+
+    // ---------- Reader ----------
+    function renderReader(ch){
+      const vol = VOLUMES[ch.volume] || { numeral:ch.volume, title:'' };
+      readerVol.textContent = 'VOL ' + vol.numeral + ' \u2014 ' + (vol.title||'').toUpperCase();
+
+      const idx = CHAPTERS.findIndex(c => c.id===ch.id);
+      const prev = CHAPTERS[idx-1], next = CHAPTERS[idx+1];
+      prevBtn.disabled = !prev; nextBtn.disabled = !next;
+      prevBtn.onclick = () => prev && openChapter(prev.id);
+      nextBtn.onclick = () => next && openChapter(next.id);
+      readerPos.textContent = 'CHAPTER ' + pad(ch.id) + ' / ' + pad(CHAPTERS.length);
+
+      const wc = wordCount(ch);
+      const mins = Math.max(1, Math.round(wc/200));
+      let html = '<header class="reader-chap-head">'
+               +   '<span class="rch-index">CHAPTER '+pad(ch.id)+'</span>'
+               +   '<h2 class="rch-title">'+escapeHtml(ch.title)+'</h2>'
+               +   '<div class="rch-meta">'+wc.toLocaleString()+' WORDS &middot; ~'+mins+' MIN READ</div>'
+               + '</header>';
+      ch.content.forEach(b => { html += buildBlock(b); });
+      readerEl.innerHTML = html;
+      applyFont();
+
+      if(window.gsap){
+        gsap.fromTo('#reader-content > *', { opacity:0, y:18 }, { opacity:1, y:0, duration:.5, stagger:.055, ease:'power2.out' });
+      }
+    }
+
+    function openChapter(id){
+      const ch = CHAPTERS.find(c => c.id===id);
+      if(!ch) return;
+      setLast(id);
+      markRead(id);
+      updateProgress();
+      renderReader(ch);
+      showView('reader');
+      window.scrollTo({ top:0, behavior:'auto' });
+    }
+
+    function showView(name){
+      const isReader = name==='reader';
+      document.body.classList.toggle('reader-active', isReader);
+      if(window.gsap){
+        if(isReader){
+          hubView.hidden = true;
+          readerView.hidden = false;
+          gsap.fromTo(readerView, { opacity:0 }, { opacity:1, duration:.4, ease:'power2.out' });
+        } else {
+          readerView.hidden = true;
+          hubView.hidden = false;
+          gsap.fromTo(hubView, { opacity:0 }, { opacity:1, duration:.4, ease:'power2.out' });
+        }
+      } else {
+        hubView.hidden = isReader;
+        readerView.hidden = !isReader;
+      }
+    }
+
+    function applyFont(){ readerEl.style.setProperty('--reader-fs', getFont()+'px'); }
+
+    // ---------- Progress UI ----------
+    function updateProgress(){
+      const pct = progressPct();
+      document.getElementById('hp-fill').style.width = pct+'%';
+      document.getElementById('hp-pct').textContent = pct+'%';
+      document.getElementById('pc-fill').style.width = pct+'%';
+      document.getElementById('pc-pct').textContent = pct+'%';
+      document.getElementById('pc-count').textContent = getRead().length+' / '+CHAPTERS.length+' CHAPTERS';
+      document.getElementById('pc-words').textContent = totalWords().toLocaleString()+' WORDS ARCHIVED';
+    }
+
+    // ---------- Scroll progress (reader) ----------
+    function onScroll(){
+      if(readerView.hidden){ scrollProg.style.width = '0%'; return; }
+      const h = document.documentElement;
+      const max = h.scrollHeight - h.clientHeight;
+      const pct = max > 0 ? (h.scrollTop / max) * 100 : 0;
+      scrollProg.style.width = pct + '%';
+    }
+
+    // ---------- Wiring ----------
+    searchInput.addEventListener('input', e => renderHub(e.target.value));
+    document.getElementById('continue-btn').addEventListener('click', () => {
+      const last = getLast();
+      openChapter(last ? last : CHAPTERS[0].id);
+    });
+    document.getElementById('start-btn').addEventListener('click', () => openChapter(CHAPTERS[0].id));
+    document.getElementById('back-btn').addEventListener('click', () => showView('hub'));
+    document.getElementById('brand-home').addEventListener('click', () => showView('hub'));
+    document.getElementById('font-up').addEventListener('click', () => { setFont(Math.min(24, getFont()+1)); applyFont(); });
+    document.getElementById('font-down').addEventListener('click', () => { setFont(Math.max(15, getFont()-1)); applyFont(); });
+
+    document.addEventListener('keydown', e => {
+      if(readerView.hidden) return;
+      if(e.key === 'ArrowLeft' && !prevBtn.disabled) prevBtn.click();
+      else if(e.key === 'ArrowRight' && !nextBtn.disabled) nextBtn.click();
+      else if(e.key === 'Escape') showView('hub');
+    });
+    window.addEventListener('scroll', onScroll, { passive:true });
+
+    // ---------- Init ----------
+    function init(){
+      KW_RE = buildKW();
+      updateProgress();
+      renderHub('');
+      applyFont();
+      if(window.gsap){
+        gsap.from('.hero-line', { y:30, opacity:0, stagger:.12, duration:.8, ease:'power3.out', delay:.15 });
+      }
+    }
+    init();
+  })();
+  </script>
+</body>
+</html>
