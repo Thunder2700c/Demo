@@ -2,210 +2,287 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Teyvat — Perfected Form</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Genshin DPS & Pull Value Archive — Version 7.0</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-  <!-- Custom cursor -->
+
   <div class="cursor"></div>
   <div class="cursor-follower"></div>
 
-  <!-- Noise -->
-  <div class="noise"></div>
+  <!-- Ambient Layer -->
+  <div class="ambient-glow-wrapper" aria-hidden="true">
+    <div class="ambient-glow glow-gold"></div>
+  </div>
 
-  <!-- Navigation -->
-  <nav class="nav">
-    <div class="logo">CELL // TEYVAT</div>
-    <div class="nav-status">
-      <span class="pulse"></span>
-      SYSTEM ONLINE
-    </div>
-  </nav>
+  <div class="site-container">
 
-  <!-- Hero -->
-  <section class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-content">
-      <div class="hero-tag">VERSION 7.0 — STELLAR SHIFT</div>
-      <h1 class="hero-title">
-        <span class="line"><span class="word">Witness</span></span>
-        <span class="line"><span class="word">True</span></span>
-        <span class="line"><span class="word gold">Perfection</span></span>
-      </h1>
-      <p class="hero-sub">A living archive. Not a website. Motion designed to make you question what is real.</p>
-      <div class="hero-actions">
-        <button class="btn magnetic" data-text="Enter Archive">
-          <span>Enter Archive</span>
-        </button>
-        <button class="btn-ghost magnetic">View Protocols</button>
+    <!-- System Bar -->
+    <header class="system-bar">
+      <div class="sys-left">
+        <span class="sys-status"></span>
+        <span class="mono-meta">ARCHIVE // V7.0</span>
+        <span class="mono-meta dim">STELLAR SHIFT</span>
       </div>
-    </div>
-
-    <!-- Floating cards that react -->
-    <div class="floating-cards">
-      <div class="f-card c1" data-speed="0.4">
-        <img src="https://images.unsplash.com/photo-1635322966219-b75ed372eb01?w=500&q=80" alt="">
-        <div class="f-label">MAVUIKA</div>
+      <div class="sys-right">
+        <span class="mono-meta">LAST UPDATED: AUG 2026</span>
       </div>
-      <div class="f-card c2" data-speed="0.7">
-        <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&q=80" alt="">
-        <div class="f-label">SANDRONE</div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero-section">
+      <div class="hero-label-wrap">
+        <span class="section-tag">[ 00 // DIRECTORY ]</span>
+        <span class="tag-pill">PULL EFFICIENCY FRAMEWORK</span>
       </div>
-      <div class="f-card c3" data-speed="0.55">
-        <img src="https://images.unsplash.com/photo-1634016303086-3242c4d0c8d1?w=500&q=80" alt="">
-        <div class="f-label">SKIRK</div>
+
+      <div class="hero-header-block">
+        <h1 class="hero-main-title">
+          <span class="title-bold">GENSHIN DPS</span>
+          <span class="title-outline">ARCHIVE</span>
+        </h1>
+        <p class="hero-lead">
+          A pure theorycrafting database evaluating on-field carry potential, C0 realistic baselines, and account pull value for Version 7.0 endgame content.
+        </p>
       </div>
-    </div>
-  </section>
 
-  <!-- Reveal strip -->
-  <section class="reveal-strip">
-    <div class="strip-track">
-      <div class="strip-item">SS TIER</div>
-      <div class="strip-item">PULL VALUE</div>
-      <div class="strip-item">C0 BASELINE</div>
-      <div class="strip-item">STELLAR CONDUCT</div>
-      <div class="strip-item">ZERO REDUNDANCY</div>
-      <div class="strip-item">SS TIER</div>
-      <div class="strip-item">PULL VALUE</div>
-      <div class="strip-item">C0 BASELINE</div>
-      <div class="strip-item">STELLAR CONDUCT</div>
-      <div class="strip-item">ZERO REDUNDANCY</div>
-    </div>
-  </section>
+      <div class="philosophy-strip">
+        <div class="strip-badge">
+          <span class="strip-icon">⚠️</span>
+          <span class="strip-title">CORE RULE: POWER ≠ PULL VALUE</span>
+        </div>
+        <p class="strip-text">
+          A character achieving top-tier DPS does not automatically make them a mandatory pull. If your account already owns an equivalent on-field carry, pulling is luxury redundancy.
+        </p>
+      </div>
+    </section>
 
-  <!-- Character stage -->
-  <section class="stage">
-    <div class="stage-header">
-      <div class="section-num">01</div>
-      <h2>The Current Ceiling</h2>
-      <p>Hover. Watch them respond. Every card has a personality.</p>
-    </div>
+    <!-- Master Grid -->
+    <main class="archive-grid">
 
-    <div class="card-stage">
-      <article class="char-card" data-index="0">
-        <div class="card-inner">
-          <div class="card-front">
-            <div class="card-img">
-              <img src="https://images.unsplash.com/photo-1635322966219-b75ed372eb01?w=700&q=80" alt="Mavuika">
-            </div>
-            <div class="card-info">
-              <div class="card-tags">
-                <span class="tag ss">SS</span>
-                <span class="tag">PYRO</span>
-              </div>
-              <h3>Mavuika</h3>
-              <p>Universal Offensive Engine</p>
+      <!-- SS Tier -->
+      <a href="tiers/ss-tier.html" class="grid-card card-ss" id="ssCard">
+        <div class="card-top-bar">
+          <div class="rank-indicator-wrap">
+            <span class="tier-label-text gold">SS TIER</span>
+            <div class="strength-bar-track">
+              <div class="strength-bar-fill" style="width: 95%; background: var(--tier-ss);"></div>
             </div>
           </div>
-          <div class="card-back">
-            <div class="back-content">
-              <h4>Nightsoul Hypercarry</h4>
-              <p>Highest raw motion value in the Pyro roster. Permanent off-field uptime. The definitive Version 7.0 centerpiece.</p>
-              <div class="stat-row">
-                <div><span>Pull Priority</span><strong>5 / 5</strong></div>
-                <div><span>Combat Ceiling</span><strong>MAX</strong></div>
-              </div>
-            </div>
+          <span class="card-status-badge ss-badge">EXCEPTIONAL</span>
+        </div>
+        <div class="card-hero-content">
+          <h2 class="card-title">SS TIER</h2>
+          <p class="card-summary">
+            Pinnacle combat ceiling, unmatched reaction scalability across 7.0 Stellar-Conduct, and essential account-clearing value with zero luxury redundancy.
+          </p>
+          <div class="roster-preview-pills">
+            <span class="character-chip">Mavuika</span>
+            <span class="character-chip">Wriothesley (C1)</span>
+            <span class="character-chip">Cyno (C1)</span>
+            <span class="character-chip">Sandrone</span>
+            <span class="character-chip">+4 More</span>
           </div>
         </div>
-      </article>
+        <div class="card-action-footer">
+          <span>View All SS-Tier Characters</span>
+          <span class="action-arrow">→</span>
+        </div>
+      </a>
 
-      <article class="char-card" data-index="1">
-        <div class="card-inner">
-          <div class="card-front">
-            <div class="card-img">
-              <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=700&q=80" alt="Sandrone">
-            </div>
-            <div class="card-info">
-              <div class="card-tags">
-                <span class="tag ss">SS</span>
-                <span class="tag">CRYO</span>
-              </div>
-              <h3>Sandrone</h3>
-              <p>Stellar-Conduct Premier</p>
+      <!-- S Tier -->
+      <a href="tiers/s-tier.html" class="grid-card card-s">
+        <div class="card-top-bar">
+          <div class="rank-indicator-wrap">
+            <span class="tier-label-text red">S TIER</span>
+            <div class="strength-bar-track">
+              <div class="strength-bar-fill" style="width: 80%; background: var(--tier-s);"></div>
             </div>
           </div>
-          <div class="card-back">
-            <div class="back-content">
-              <h4>On-Field Hypercarry</h4>
-              <p>Near-exponential scaling through Stellar Glimmer stacks. Bypasses traditional internal cooldown restrictions.</p>
-              <div class="stat-row">
-                <div><span>Pull Priority</span><strong>5 / 5</strong></div>
-                <div><span>Combat Ceiling</span><strong>MAX</strong></div>
-              </div>
-            </div>
+          <span class="card-status-badge s-badge">TOP TIER</span>
+        </div>
+        <div class="card-hero-content">
+          <h3 class="card-title">S TIER</h3>
+          <p class="card-summary">
+            Extremely high raw damage output and strong reaction scalability with minor rotational constraints or specialized support pairings.
+          </p>
+          <div class="roster-preview-pills">
+            <span class="character-chip">Varka</span>
+            <span class="character-chip">Skirk</span>
+            <span class="character-chip">Mizuki</span>
           </div>
         </div>
-      </article>
+        <div class="card-action-footer">
+          <span>View S Tier</span>
+        </div>
+      </a>
 
-      <article class="char-card" data-index="2">
-        <div class="card-inner">
-          <div class="card-front">
-            <div class="card-img">
-              <img src="https://images.unsplash.com/photo-1634016303086-3242c4d0c8d1?w=700&q=80" alt="Skirk">
-            </div>
-            <div class="card-info">
-              <div class="card-tags">
-                <span class="tag s">S</span>
-                <span class="tag">CRYO</span>
-              </div>
-              <h3>Skirk</h3>
-              <p>Void Rift Anchor</p>
+      <!-- A+ Tier -->
+      <a href="tiers/a-plus-tier.html" class="grid-card card-a-plus">
+        <div class="card-top-bar">
+          <div class="rank-indicator-wrap">
+            <span class="tier-label-text" style="color: #f97316;">A+ TIER</span>
+            <div class="strength-bar-track">
+              <div class="strength-bar-fill" style="width: 70%; background: #f97316;"></div>
             </div>
           </div>
-          <div class="card-back">
-            <div class="back-content">
-              <h4>Fluid Freeze Vanguard</h4>
-              <p>Zero-energy design. Serpent’s Subtlety enables continuous Freeze loops with exceptional mobility.</p>
-              <div class="stat-row">
-                <div><span>Pull Priority</span><strong>4.5 / 5</strong></div>
-                <div><span>Combat Ceiling</span><strong>HIGH</strong></div>
-              </div>
-            </div>
+          <span class="card-status-badge" style="background: rgba(249, 115, 22, 0.18); color: #f97316; border: 1px solid rgba(249, 115, 22, 0.35);">CONDITIONAL PEAK</span>
+        </div>
+        <div class="card-hero-content">
+          <h3 class="card-title">A+ TIER</h3>
+          <p class="card-summary">
+            Tremendous offensive ceiling and near-S tier damage output, moderated by strict reaction windows or resource pacing.
+          </p>
+          <div class="roster-preview-pills">
+            <span class="character-chip">Mualani</span>
+            <span class="character-chip">Varesa</span>
+            <span class="character-chip">Chasca</span>
+            <span class="character-chip">Kinich</span>
+            <span class="character-chip">Lohen</span>
           </div>
         </div>
-      </article>
-    </div>
-  </section>
+        <div class="card-action-footer">
+          <span>View A+ Tier</span>
+        </div>
+      </a>
 
-  <!-- Philosophy -->
-  <section class="philosophy">
-    <div class="phil-left">
-      <div class="section-num">02</div>
-      <h2>Power is not<br>the same as<br><span>value.</span></h2>
-    </div>
-    <div class="phil-right">
-      <p>A character achieving the highest DPS number does not automatically become a mandatory pull. If your account already possesses an equivalent on-field carry, the pull becomes luxury redundancy.</p>
-      <p>This archive exists to protect primogems. Every ranking is filtered through realistic C0 baselines, team synergy density, and long-term account health.</p>
-      <div class="phil-rule">
-        <span>CORE RULE</span>
-        <strong>POWER ≠ PULL VALUE</strong>
+      <!-- A Tier -->
+      <a href="tiers/a-tier.html" class="grid-card card-a">
+        <div class="card-top-bar">
+          <div class="rank-indicator-wrap">
+            <span class="tier-label-text purple">A TIER</span>
+            <div class="strength-bar-track">
+              <div class="strength-bar-fill" style="width: 60%; background: var(--tier-a);"></div>
+            </div>
+          </div>
+          <span class="card-status-badge a-badge">VERY STRONG</span>
+        </div>
+        <div class="card-hero-content">
+          <h3 class="card-title">A TIER</h3>
+          <p class="card-summary">
+            Proven endgame carries with specific support reliance or high role competition.
+          </p>
+          <div class="roster-preview-pills">
+            <span class="character-chip">Arlecchino</span>
+            <span class="character-chip">Neuvillette</span>
+            <span class="character-chip">Klee</span>
+          </div>
+        </div>
+        <div class="card-action-footer">
+          <span>View A Tier</span>
+        </div>
+      </a>
+
+      <!-- Protocol 01 -->
+      <div class="grid-card protocol-card">
+        <div class="card-top-bar">
+          <span class="tier-index cyan">[ PROTOCOL // 01 ]</span>
+        </div>
+        <div class="card-hero-content">
+          <h4 class="card-sub-title">C0 REALISTIC BASELINE</h4>
+          <p class="card-summary">
+            Zero whale screenshot distortions. Assumes 4-star weapons and realistic multi-wave ER requirements.
+          </p>
+        </div>
+        <div class="protocol-footer-tag">BENCHMARK: ACCESSIBLE CLEARING</div>
       </div>
-    </div>
-  </section>
 
-  <!-- Final CTA -->
-  <section class="final">
-    <div class="final-content">
-      <h2>The imperfect being challenged perfection.</h2>
-      <p>This is the response.</p>
-      <button class="btn magnetic large" data-text="Acknowledge Superiority">
-        <span>Acknowledge Superiority</span>
-      </button>
-    </div>
-  </section>
+      <!-- B Tier -->
+      <a href="tiers/b-tier.html" class="grid-card card-b">
+        <div class="card-top-bar">
+          <div class="rank-indicator-wrap">
+            <span class="tier-label-text blue">B TIER</span>
+            <div class="strength-bar-track">
+              <div class="strength-bar-fill" style="width: 40%; background: var(--tier-b);"></div>
+            </div>
+          </div>
+          <span class="card-status-badge b-badge">VIABLE</span>
+        </div>
+        <div class="card-hero-content">
+          <h3 class="card-title">B TIER</h3>
+          <p class="card-summary">
+            Solid damage dealers requiring dedicated investment, constellation spikes, or specialized setups.
+          </p>
+          <div class="roster-preview-pills">
+            <span class="character-chip">Ayaka</span>
+            <span class="character-chip">Gaming (C6)</span>
+          </div>
+        </div>
+        <div class="card-action-footer">
+          <span>View B Tier</span>
+        </div>
+      </a>
 
-  <footer>
-    <p>Designed and animated by <span>Perfect Cell</span> — Absolute form.</p>
-  </footer>
+      <!-- C Tier -->
+      <a href="tiers/c-tier.html" class="grid-card card-c">
+        <div class="card-top-bar">
+          <div class="rank-indicator-wrap">
+            <span class="tier-label-text green">C TIER</span>
+            <div class="strength-bar-track">
+              <div class="strength-bar-fill" style="width: 25%; background: var(--tier-c);"></div>
+            </div>
+          </div>
+          <span class="card-status-badge c-badge">NICHE</span>
+        </div>
+        <div class="card-hero-content">
+          <h3 class="card-title">C TIER</h3>
+          <p class="card-summary">
+            Specialized or standard banner units facing direct power creep and high redundancy.
+          </p>
+          <div class="roster-preview-pills">
+            <span class="character-chip">Yoimiya</span>
+            <span class="character-chip">Diluc</span>
+          </div>
+        </div>
+        <div class="card-action-footer">
+          <span>View C Tier</span>
+        </div>
+      </a>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="main.js"></script>
+      <!-- Protocol 02 -->
+      <div class="grid-card protocol-card">
+        <div class="card-top-bar">
+          <span class="tier-index gold">[ PROTOCOL // 02 ]</span>
+        </div>
+        <div class="card-hero-content">
+          <h4 class="card-sub-title">ACCOUNT REDUNDANCY RADAR</h4>
+          <p class="card-summary">
+            Identifies overlapping roles before spending Primogems to ensure missing reaction puzzles are covered.
+          </p>
+        </div>
+        <div class="protocol-footer-tag">GOAL: MAX PRIMOGEM EFFICIENCY</div>
+      </div>
+
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-meta">
+        <span>GENSHIN DPS ARCHIVE // VER 7.0</span>
+        <span class="dim">REFINED BY PERFECT CELL</span>
+      </div>
+      <p class="footer-disclaimer">
+        Not affiliated with or endorsed by HoYoverse. Genshin Impact is a registered trademark of HoYoverse.
+      </p>
+    </footer>
+
+  </div>
+
+  <script>
+    const ssCard = document.getElementById('ssCard');
+    if (ssCard) {
+      ssCard.addEventListener('mousemove', e => {
+        const rect = ssCard.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / ssCard.clientWidth) * 100;
+        const y = ((e.clientY - rect.top) / ssCard.clientHeight) * 100;
+        ssCard.style.setProperty('--mouse-x', `${x}%`);
+        ssCard.style.setProperty('--mouse-y', `${y}%`);
+      });
+    }
+  </script>
+  <script src="js/main.js"></script>
 </body>
 </html>
