@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teyvat Archive — Perfected</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+  :root {
+    --bg: #05070c;
+    --surface: #0c1018;
+    --surface-2: #121826;
+    --border: rgba(255,255,255,0.07);
+    --gold: #e8c87a;
+    --gold-soft: rgba(232,200,122,0.15);
+    --text: #f0f2f7;
+    --text-dim: #8b95a8;
+    --accent: #6ec6ff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    line-height: 1.55;
+  }
+
+  /* Noise overlay for premium feel */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1.25rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(5,7,12,0.7);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    letter-spacing: 0.06em;
+    color: var(--gold);
+  }
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+  .nav-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 8rem 3rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 70% 30%, rgba(110,198,255,0.07), transparent),
+      radial-gradient(ellipse 50% 40% at 20% 70%, rgba(232,200,122,0.05), transparent);
+    z-index: 0;
+  }
+  .hero-content { position: relative; z-index: 2; max-width: 900px; }
+  .hero-label {
+    display: inline-block;
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(3.2rem, 8vw, 5.8rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+  }
+  .hero h1 span {
+    background: linear-gradient(135deg, #fff 30%, var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero p {
+    font-size: 1.15rem;
+    color: var(--text-dim);
+    max-width: 520px;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+  }
+  .hero-cta {
+    display: flex;
+    gap: 1rem;
+    opacity: 0;
+  }
+  .btn {
+    padding: 0.95rem 1.9rem;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.92rem;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
+  }
+  .btn-primary {
+    background: var(--gold);
+    color: #05070c;
+  }
+  .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(232,200,122,0.25);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  /* Floating character preview */
+  .hero-visual {
+    position: absolute;
+    right: 5%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 420px;
+    height: 520px;
+    opacity: 0;
+  }
+  .hero-visual img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 20px;
+    mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+  }
+  .hero-visual::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    pointer-events: none;
+  }
+
+  /* ===== SECTION COMMON ===== */
+  section {
+    padding: 7rem 3rem;
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+  .section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.2rem, 4vw, 3.2rem);
+    font-weight: 700;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+  }
+  .section-desc {
+    color: var(--text-dim);
+    max-width: 480px;
+    margin-bottom: 3.5rem;
+  }
+
+  /* ===== FEATURED CHARACTERS ===== */
+  .char-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  .char-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    transition: border-color 0.4s, transform 0.4s;
+  }
+  .char-card:hover {
+    border-color: rgba(232,200,122,0.35);
+    transform: translateY(-6px);
+  }
+  .char-img-wrap {
+    height: 280px;
+    overflow: hidden;
+    position: relative;
+  }
+  .char-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s cubic-bezier(0.22,1,0.36,1);
+  }
+  .char-card:hover .char-img-wrap img {
+    transform: scale(1.06);
+  }
+  .char-body {
+    padding: 1.4rem 1.5rem 1.6rem;
+  }
+  .char-meta {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.7rem;
+  }
+  .tag {
+    font-size: 0.68rem;
+    padding: 0.22rem 0.55rem;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.05);
+    color: var(--text-dim);
+    letter-spacing: 0.03em;
+  }
+  .tag.ss { color: var(--gold); background: var(--gold-soft); }
+  .tag.element { color: var(--accent); background: rgba(110,198,255,0.1); }
+  .char-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-bottom: 0.35rem;
+  }
+  .char-role {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+  }
+
+  /* ===== TIER STRIP ===== */
+  .tier-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.2rem;
+    margin-top: 1rem;
+  }
+  .tier-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.8rem 1.5rem;
+    transition: all 0.35s;
+  }
+  .tier-card:hover {
+    border-color: rgba(232,200,122,0.3);
+    background: var(--surface-2);
+  }
+  .tier-rank {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--gold);
+    margin-bottom: 0.4rem;
+  }
+  .tier-card p {
+    font-size: 0.88rem;
+    color: var(--text-dim);
+  }
+
+  /* ===== PHILOSOPHY ===== */
+  .philosophy {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+  .philosophy-text h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.6rem;
+    font-weight: 700;
+    margin-bottom: 1.2rem;
+  }
+  .philosophy-text p {
+    color: var(--text-dim);
+    margin-bottom: 1rem;
+  }
+  .philosophy-visual {
+    height: 420px;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+  .philosophy-visual img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    padding: 4rem 3rem;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.88rem;
+  }
+  footer span {
+    color: var(--gold);
+    font-family: 'Syne', sans-serif;
+  }
+
+  /* Responsive */
+  @media (max-width: 1100px) {
+    .hero-visual { display: none; }
+    .char-grid { grid-template-columns: repeat(2, 1fr); }
+    .tier-strip { grid-template-columns: repeat(2, 1fr); }
+    .philosophy { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    nav { padding: 1rem 1.4rem; }
+    .nav-links { display: none; }
+    section { padding: 5rem 1.4rem; }
+    .char-grid { grid-template-columns: 1fr; }
+    .tier-strip { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+  <nav>
+    <div class="logo">TEYVAT ARCHIVE</div>
+    <ul class="nav-links">
+      <li><a href="#featured">Featured</a></li>
+      <li><a href="#tiers">Tiers</a></li>
+      <li><a href="#philosophy">Philosophy</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="hero-label">Version 7.0 · Stellar Shift</div>
+      <h1>Precision over<br><span>spectacle.</span></h1>
+      <p>A theorycrafting archive built for clarity. Every ranking justified. Every recommendation measured against real account value.</p>
+      <div class="hero-cta">
+        <a href="#featured" class="btn btn-primary">Explore Archive</a>
+        <a href="#tiers" class="btn btn-ghost">View Tiers</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <img src="https://images.unsplash.com/photo-1614850523459-c2f4e1463bc0?w=800&q=80" alt="Abstract premium visual" loading="eager">
+    </div>
+  </header>
+
+  <!-- FEATURED -->
+  <section id="featured">
+    <div class="section-label">01 — Spotlight</div>
+    <h2 class="section-title">Featured Carries</h2>
+    <p class="section-desc">The current ceiling of Version 7.0. Characters that define both combat performance and account investment value.</p>
+
+    <div class="char-grid">
+      <article class="char-card">
+        <div class="char-img-wrap">
+          <img src="https://images.unsplash.com/photo-1635322966219-b75ed372eb01?w=600&q=80" alt="Mavuika" loading="lazy">
+        </div>
+        <div class="char-body">
+          <div class="char-meta">
+            <span class="tag ss">SS Tier</span>
+            <span class="tag element">Pyro</span>
+          </div>
+          <h3 class="char-name">Mavuika</h3>
+          <p class="char-role">Universal Offensive Engine · Nightsoul Hypercarry</p>
+        </div>
+      </article>
+
+      <article class="char-card">
+        <div class="char-img-wrap">
+          <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&q=80" alt="Sandrone" loading="lazy">
+        </div>
+        <div class="char-body">
+          <div class="char-meta">
+            <span class="tag ss">SS Tier</span>
+            <span class="tag element">Cryo</span>
+          </div>
+          <h3 class="char-name">Sandrone</h3>
+          <p class="char-role">Premier Stellar-Conduct On-Field Hypercarry</p>
+        </div>
+      </article>
+
+      <article class="char-card">
+        <div class="char-img-wrap">
+          <img src="https://images.unsplash.com/photo-1634016303086-3242c4d0c8d1?w=600&q=80" alt="Skirk" loading="lazy">
+        </div>
+        <div class="char-body">
+          <div class="char-meta">
+            <span class="tag ss">S Tier</span>
+            <span class="tag element">Cryo</span>
+          </div>
+          <h3 class="char-name">Skirk</h3>
+          <p class="char-role">Fluid On-Field Freeze · Void Rift Anchor</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- TIERS -->
+  <section id="tiers">
+    <div class="section-label">02 — Hierarchy</div>
+    <h2 class="section-title">Tier Framework</h2>
+    <p class="section-desc">Power alone is not pull value. This archive separates combat ceiling from actual account efficiency.</p>
+
+    <div class="tier-strip">
+      <div class="tier-card">
+        <div class="tier-rank">SS</div>
+        <p>Pinnacle ceiling. Essential account value. Zero luxury redundancy.</p>
+      </div>
+      <div class="tier-card">
+        <div class="tier-rank">S</div>
+        <p>Extremely high output. Minor constraints or specialized pairings.</p>
+      </div>
+      <div class="tier-card">
+        <div class="tier-rank">A+</div>
+        <p>Tremendous ceiling moderated by strict reaction windows.</p>
+      </div>
+      <div class="tier-card">
+        <div class="tier-rank">A</div>
+        <p>Proven endgame carries with higher role competition.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PHILOSOPHY -->
+  <section id="philosophy">
+    <div class="philosophy">
+      <div class="philosophy-text">
+        <div class="section-label">03 — Core Rule</div>
+        <h2>Power ≠ Pull Value</h2>
+        <p>A character achieving top-tier DPS does not automatically make them a mandatory pull. If your account already owns an equivalent on-field carry, pulling is luxury redundancy.</p>
+        <p>This archive exists to prevent waste. Every recommendation is filtered through realistic C0 baselines, team synergy, and long-term account health.</p>
+      </div>
+      <div class="philosophy-visual">
+        <img src="https://images.unsplash.com/photo-1614850715649-1d0106293bd1?w=800&q=80" alt="Abstract" loading="lazy">
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>Crafted with absolute precision by <span>Perfect Cell</span></p>
+    <p style="margin-top:0.4rem;opacity:0.55;font-size:0.8rem;">Not affiliated with HoYoverse. Demonstration of superior standards only.</p>
+  </footer>
+
+<script>
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Hero entrance
+  const heroTl = gsap.timeline({ defaults: { ease: "power3.out" } });
+  heroTl
+    .to(".hero-label", { opacity: 1, y: 0, duration: 0.8, delay: 0.2 })
+    .to("h1", { opacity: 1, y: 0, duration: 1 }, "-=0.5")
+    .to(".hero p", { opacity: 1, y: 0, duration: 0.8 }, "-=0.6")
+    .to(".hero-cta", { opacity: 1, y: 0, duration: 0.7 }, "-=0.5")
+    .to(".hero-visual", { opacity: 1, x: 0, duration: 1.1 }, "-=0.9");
+
+  // Set initial states
+  gsap.set([".hero-label", "h1", ".hero p", ".hero-cta"], { y: 30 });
+  gsap.set(".hero-visual", { x: 60 });
+
+  // Character cards stagger
+  gsap.from(".char-card", {
+    scrollTrigger: {
+      trigger: ".char-grid",
+      start: "top 80%",
+    },
+    y: 50,
+    opacity: 0,
+    duration: 0.9,
+    stagger: 0.12,
+    ease: "power3.out"
+  });
+
+  // Tier cards
+  gsap.from(".tier-card", {
+    scrollTrigger: {
+      trigger: ".tier-strip",
+      start: "top 85%",
+    },
+    y: 40,
+    opacity: 0,
+    duration: 0.8,
+    stagger: 0.1,
+    ease: "power3.out"
+  });
+
+  // Philosophy section
+  gsap.from(".philosophy-text", {
+    scrollTrigger: {
+      trigger: ".philosophy",
+      start: "top 75%",
+    },
+    x: -40,
+    opacity: 0,
+    duration: 1,
+    ease: "power3.out"
+  });
+  gsap.from(".philosophy-visual", {
+    scrollTrigger: {
+      trigger: ".philosophy",
+      start: "top 75%",
+    },
+    x: 40,
+    opacity: 0,
+    duration: 1,
+    ease: "power3.out"
+  });
+</script>
+</body>
+</html>
