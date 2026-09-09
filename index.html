@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="description" content="KESHA - India's Culture-Tech Platform for digital booking of sacred Vedic rituals, verified Pandits, and hassle-free ceremonies." />
   <title>KESHA | Culture-Tech Ritual Services</title>
   
@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
-  <!-- Font Awesome Icons for clean, zero-dependency traditional & social icons -->
+  <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   
   <link rel="stylesheet" href="style.css" />
@@ -45,33 +45,36 @@
         </button>
       </div>
     </div>
-
-    <!-- Mobile Drawer -->
-    <div class="mobile-drawer" id="mobile-drawer">
-      <div class="drawer-header">
-        <div class="brand-logo">
-          <span class="logo-symbol">ॐ</span>
-          <span class="logo-text">KESHA</span>
-        </div>
-        <button class="close-drawer" id="close-drawer" aria-label="Close Navigation Menu">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-      <nav class="mobile-nav-links">
-        <a href="#home" class="mobile-nav-item">Home</a>
-        <a href="#about" class="mobile-nav-item">About Us</a>
-        <a href="#services" class="mobile-nav-item">Services</a>
-        <a href="#how-it-works" class="mobile-nav-item">How It Works</a>
-        <a href="#pandit-registration" class="mobile-nav-item">Pandit Registration</a>
-        <a href="#contact" class="mobile-nav-item">Contact</a>
-      </nav>
-      <div class="mobile-drawer-cta">
-        <a href="https://wa.me/919999999999?text=Hi%20Kesha,%20I%20want%20to%20enquire%20about%20a%20ritual%20service." target="_blank" class="btn btn-primary btn-full">
-          <i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp
-        </a>
-      </div>
-    </div>
   </header>
+
+  <!-- Mobile Drawer Overlay Backdrop -->
+  <div class="drawer-overlay" id="drawer-overlay"></div>
+
+  <!-- Mobile Drawer -->
+  <div class="mobile-drawer" id="mobile-drawer" aria-hidden="true">
+    <div class="drawer-header">
+      <div class="brand-logo">
+        <span class="logo-symbol">ॐ</span>
+        <span class="logo-text">KESHA</span>
+      </div>
+      <button class="close-drawer" id="close-drawer" aria-label="Close Navigation Menu">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <nav class="mobile-nav-links">
+      <a href="#home" class="mobile-nav-item">Home</a>
+      <a href="#about" class="mobile-nav-item">About Us</a>
+      <a href="#services" class="mobile-nav-item">Services</a>
+      <a href="#how-it-works" class="mobile-nav-item">How It Works</a>
+      <a href="#pandit-registration" class="mobile-nav-item">Pandit Registration</a>
+      <a href="#contact" class="mobile-nav-item">Contact</a>
+    </nav>
+    <div class="mobile-drawer-cta">
+      <a href="https://wa.me/919999999999?text=Hi%20Kesha,%20I%20want%20to%20enquire%20about%20a%20ritual%20service." target="_blank" class="btn btn-primary btn-full">
+        <i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp
+      </a>
+    </div>
+  </div>
 
   <!-- ================= HERO SECTION ================= -->
   <section class="hero-section" id="home">
@@ -436,9 +439,7 @@
           <h3 class="form-title">Pandit Registration Form</h3>
           <p class="form-subtitle">Fill in your details. Our verification team will get in touch within 24 hours.</p>
 
-          <!-- Form connects to Web3Forms without backend -->
           <form class="custom-form" id="pandit-form" action="https://api.web3forms.com/submit" method="POST">
-            <!-- Hidden Access Key for Web3Forms -->
             <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY_HERE" />
             <input type="hidden" name="subject" value="New Pandit Registration - KESHA" />
             <input type="hidden" name="from_name" value="KESHA Registration Portal" />
@@ -699,7 +700,7 @@
 
     <div class="footer-bottom">
       <div class="container footer-bottom-flex">
-        <p>&copy; 2026 KESHA (`kesha.co.in`). All rights reserved.</p>
+        <p>&copy; 2026 KESHA (kesha.co.in). All rights reserved.</p>
         <p>Preserving Indian Culture through Technology.</p>
       </div>
     </div>
@@ -711,7 +712,6 @@
     <span class="floating-tooltip">Chat with us</span>
   </a>
 
-  <!-- Link script -->
   <script src="script.js"></script>
 </body>
 </html>
