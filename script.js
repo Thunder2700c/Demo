@@ -56,7 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize Contact Form
   setupFormHandler('contact-form', 'contact-form-status');
 
-
   // ------------------------------------------------------------------------
   // 2. Sticky Header Shadow on Scroll
   // ------------------------------------------------------------------------
