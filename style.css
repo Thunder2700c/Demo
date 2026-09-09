@@ -38,6 +38,11 @@
   --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
+/* Alpine Cloak to Prevent Flash of Unstyled Content */
+[x-cloak] {
+  display: none !important;
+}
+
 /* Base Reset & Mobile Boundary Lock */
 * {
   margin: 0;
@@ -902,56 +907,125 @@ img {
 }
 
 /* ==========================================================================
-   PANDIT REGISTRATION
+   FAQS ACCORDION
    ========================================================================== */
-.pandit-section {
+.faqs-section {
+  padding: 100px 0;
+}
+
+.accordion-container {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.accordion-item {
+  background-color: var(--bg-pure-white);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.accordion-item.active {
+  border-color: var(--border-gold);
+}
+
+.accordion-header {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary-maroon);
+  cursor: pointer;
+  text-align: left;
+}
+
+.accordion-icon {
+  font-size: 0.9rem;
+  transition: transform 0.3s ease;
+  color: var(--accent-gold);
+}
+
+.accordion-item.active .accordion-icon {
+  transform: rotate(180deg);
+}
+
+.accordion-content {
+  background-color: var(--bg-pure-white);
+}
+
+.accordion-content p {
+  padding: 0 24px 20px 24px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* ==========================================================================
+   CONTACT SECTION & FORM
+   ========================================================================== */
+.contact-section {
   padding: 100px 0;
   background-color: var(--bg-pure-white);
   border-top: 1px solid var(--border-subtle);
-  border-bottom: 1px solid var(--border-subtle);
 }
 
-.pandit-wrapper {
+.contact-grid {
   display: grid;
-  grid-template-columns: 1fr 1.15fr;
+  grid-template-columns: 1fr 1.2fr;
   gap: 60px;
   align-items: center;
 }
 
-.pandit-desc {
+.contact-desc {
   font-size: 1.05rem;
-  margin-bottom: 24px;
-}
-
-.pandit-perks {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
   margin-bottom: 30px;
 }
 
-.pandit-perks li {
+.contact-info-list {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  font-weight: 500;
-  color: var(--text-charcoal);
+  flex-direction: column;
+  gap: 20px;
 }
 
-.pandit-perks li i {
+.contact-info-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 20px;
+  background: var(--bg-cream);
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+}
+
+.contact-info-card i {
+  font-size: 1.5rem;
   color: var(--primary-maroon);
 }
 
-.pandit-direct-note {
-  background: var(--bg-cream);
-  padding: 16px 20px;
-  border-radius: 8px;
-  border: 1px solid var(--border-subtle);
-  font-size: 0.9rem;
+.contact-info-card h5 {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  margin-bottom: 2px;
 }
 
-.pandit-form-container, .contact-form-container {
+.contact-info-card a, .contact-info-card span {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-charcoal);
+}
+
+.contact-form-container {
   background: var(--bg-cream);
   padding: 40px;
   border-radius: 12px;
@@ -1031,128 +1105,6 @@ img {
 .form-message.error {
   display: block;
   color: #b91c1c;
-}
-
-/* ==========================================================================
-   FAQS ACCORDION
-   ========================================================================== */
-.faqs-section {
-  padding: 100px 0;
-}
-
-.accordion-container {
-  max-width: 800px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.accordion-item {
-  background-color: var(--bg-pure-white);
-  border: 1px solid var(--border-subtle);
-  border-radius: 8px;
-  overflow: hidden;
-  transition: var(--transition);
-}
-
-.accordion-item.active {
-  border-color: var(--border-gold);
-}
-
-.accordion-header {
-  width: 100%;
-  background: none;
-  border: none;
-  padding: 20px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-family: var(--font-serif);
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--primary-maroon);
-  cursor: pointer;
-  text-align: left;
-}
-
-.accordion-icon {
-  font-size: 0.9rem;
-  transition: transform 0.3s ease;
-  color: var(--accent-gold);
-}
-
-.accordion-item.active .accordion-icon {
-  transform: rotate(180deg);
-}
-
-.accordion-content {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease-out;
-  background-color: var(--bg-pure-white);
-}
-
-.accordion-content p {
-  padding: 0 24px 20px 24px;
-  font-size: 0.95rem;
-  line-height: 1.6;
-}
-
-/* ==========================================================================
-   CONTACT SECTION
-   ========================================================================== */
-.contact-section {
-  padding: 100px 0;
-  background-color: var(--bg-pure-white);
-  border-top: 1px solid var(--border-subtle);
-}
-
-.contact-grid {
-  display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap: 60px;
-  align-items: center;
-}
-
-.contact-desc {
-  font-size: 1.05rem;
-  margin-bottom: 30px;
-}
-
-.contact-info-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.contact-info-card {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  padding: 20px;
-  background: var(--bg-cream);
-  border-radius: 8px;
-  border: 1px solid var(--border-subtle);
-}
-
-.contact-info-card i {
-  font-size: 1.5rem;
-  color: var(--primary-maroon);
-}
-
-.contact-info-card h5 {
-  font-size: 0.82rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--text-muted);
-  margin-bottom: 2px;
-}
-
-.contact-info-card a, .contact-info-card span {
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: var(--text-charcoal);
 }
 
 /* ==========================================================================
@@ -1337,7 +1289,7 @@ img {
    RESPONSIVE DESIGN (MEDIA QUERIES)
    ========================================================================== */
 @media (max-width: 1024px) {
-  .hero-grid, .about-grid, .pandit-wrapper, .contact-grid, .trust-banner {
+  .hero-grid, .about-grid, .contact-grid, .trust-banner {
     grid-template-columns: 1fr;
     gap: 40px;
   }
