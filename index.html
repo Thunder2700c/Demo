@@ -1,553 +1,717 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Teyvat Archive — Perfected</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<style>
-  :root {
-    --bg: #05070c;
-    --surface: #0c1018;
-    --surface-2: #121826;
-    --border: rgba(255,255,255,0.07);
-    --gold: #e8c87a;
-    --gold-soft: rgba(232,200,122,0.15);
-    --text: #f0f2f7;
-    --text-dim: #8b95a8;
-    --accent: #6ec6ff;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body {
-    font-family: 'Inter', system-ui, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    overflow-x: hidden;
-    line-height: 1.55;
-  }
-
-  /* Noise overlay for premium feel */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    opacity: 0.03;
-    pointer-events: none;
-    z-index: 9999;
-  }
-
-  /* ===== NAV ===== */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    padding: 1.25rem 3rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(5,7,12,0.7);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
-  }
-  .logo {
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 1.15rem;
-    letter-spacing: 0.06em;
-    color: var(--gold);
-  }
-  .nav-links {
-    display: flex;
-    gap: 2.5rem;
-    list-style: none;
-  }
-  .nav-links a {
-    color: var(--text-dim);
-    text-decoration: none;
-    font-size: 0.88rem;
-    font-weight: 500;
-    transition: color 0.3s;
-  }
-  .nav-links a:hover { color: var(--gold); }
-
-  /* ===== HERO ===== */
-  .hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 8rem 3rem 4rem;
-    position: relative;
-    overflow: hidden;
-  }
-  .hero-bg {
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 70% 50% at 70% 30%, rgba(110,198,255,0.07), transparent),
-      radial-gradient(ellipse 50% 40% at 20% 70%, rgba(232,200,122,0.05), transparent);
-    z-index: 0;
-  }
-  .hero-content { position: relative; z-index: 2; max-width: 900px; }
-  .hero-label {
-    display: inline-block;
-    font-size: 0.75rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 1.5rem;
-    opacity: 0;
-  }
-  .hero h1 {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(3.2rem, 8vw, 5.8rem);
-    font-weight: 800;
-    line-height: 1.05;
-    letter-spacing: -0.02em;
-    margin-bottom: 1.5rem;
-    opacity: 0;
-  }
-  .hero h1 span {
-    background: linear-gradient(135deg, #fff 30%, var(--gold));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  .hero p {
-    font-size: 1.15rem;
-    color: var(--text-dim);
-    max-width: 520px;
-    margin-bottom: 2.5rem;
-    opacity: 0;
-  }
-  .hero-cta {
-    display: flex;
-    gap: 1rem;
-    opacity: 0;
-  }
-  .btn {
-    padding: 0.95rem 1.9rem;
-    border-radius: 6px;
-    font-weight: 600;
-    font-size: 0.92rem;
-    cursor: pointer;
-    border: none;
-    text-decoration: none;
-    transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
-  }
-  .btn-primary {
-    background: var(--gold);
-    color: #05070c;
-  }
-  .btn-primary:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 30px rgba(232,200,122,0.25);
-  }
-  .btn-ghost {
-    background: transparent;
-    color: var(--text);
-    border: 1px solid var(--border);
-  }
-  .btn-ghost:hover {
-    border-color: var(--gold);
-    color: var(--gold);
-  }
-
-  /* Floating character preview */
-  .hero-visual {
-    position: absolute;
-    right: 5%;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 420px;
-    height: 520px;
-    opacity: 0;
-  }
-  .hero-visual img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 20px;
-    mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
-  }
-  .hero-visual::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    pointer-events: none;
-  }
-
-  /* ===== SECTION COMMON ===== */
-  section {
-    padding: 7rem 3rem;
-    max-width: 1300px;
-    margin: 0 auto;
-  }
-  .section-label {
-    font-size: 0.72rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 1rem;
-  }
-  .section-title {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(2.2rem, 4vw, 3.2rem);
-    font-weight: 700;
-    margin-bottom: 1rem;
-    letter-spacing: -0.02em;
-  }
-  .section-desc {
-    color: var(--text-dim);
-    max-width: 480px;
-    margin-bottom: 3.5rem;
-  }
-
-  /* ===== FEATURED CHARACTERS ===== */
-  .char-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-  }
-  .char-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    overflow: hidden;
-    position: relative;
-    transition: border-color 0.4s, transform 0.4s;
-  }
-  .char-card:hover {
-    border-color: rgba(232,200,122,0.35);
-    transform: translateY(-6px);
-  }
-  .char-img-wrap {
-    height: 280px;
-    overflow: hidden;
-    position: relative;
-  }
-  .char-img-wrap img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.7s cubic-bezier(0.22,1,0.36,1);
-  }
-  .char-card:hover .char-img-wrap img {
-    transform: scale(1.06);
-  }
-  .char-body {
-    padding: 1.4rem 1.5rem 1.6rem;
-  }
-  .char-meta {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 0.7rem;
-  }
-  .tag {
-    font-size: 0.68rem;
-    padding: 0.22rem 0.55rem;
-    border-radius: 4px;
-    background: rgba(255,255,255,0.05);
-    color: var(--text-dim);
-    letter-spacing: 0.03em;
-  }
-  .tag.ss { color: var(--gold); background: var(--gold-soft); }
-  .tag.element { color: var(--accent); background: rgba(110,198,255,0.1); }
-  .char-name {
-    font-family: 'Syne', sans-serif;
-    font-size: 1.35rem;
-    font-weight: 700;
-    margin-bottom: 0.35rem;
-  }
-  .char-role {
-    font-size: 0.85rem;
-    color: var(--text-dim);
-  }
-
-  /* ===== TIER STRIP ===== */
-  .tier-strip {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.2rem;
-    margin-top: 1rem;
-  }
-  .tier-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 1.8rem 1.5rem;
-    transition: all 0.35s;
-  }
-  .tier-card:hover {
-    border-color: rgba(232,200,122,0.3);
-    background: var(--surface-2);
-  }
-  .tier-rank {
-    font-family: 'Syne', sans-serif;
-    font-size: 1.6rem;
-    font-weight: 800;
-    color: var(--gold);
-    margin-bottom: 0.4rem;
-  }
-  .tier-card p {
-    font-size: 0.88rem;
-    color: var(--text-dim);
-  }
-
-  /* ===== PHILOSOPHY ===== */
-  .philosophy {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    align-items: center;
-  }
-  .philosophy-text h2 {
-    font-family: 'Syne', sans-serif;
-    font-size: 2.6rem;
-    font-weight: 700;
-    margin-bottom: 1.2rem;
-  }
-  .philosophy-text p {
-    color: var(--text-dim);
-    margin-bottom: 1rem;
-  }
-  .philosophy-visual {
-    height: 420px;
-    border-radius: 20px;
-    overflow: hidden;
-    border: 1px solid var(--border);
-    position: relative;
-  }
-  .philosophy-visual img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  /* ===== FOOTER ===== */
-  footer {
-    padding: 4rem 3rem;
-    border-top: 1px solid var(--border);
-    text-align: center;
-    color: var(--text-dim);
-    font-size: 0.88rem;
-  }
-  footer span {
-    color: var(--gold);
-    font-family: 'Syne', sans-serif;
-  }
-
-  /* Responsive */
-  @media (max-width: 1100px) {
-    .hero-visual { display: none; }
-    .char-grid { grid-template-columns: repeat(2, 1fr); }
-    .tier-strip { grid-template-columns: repeat(2, 1fr); }
-    .philosophy { grid-template-columns: 1fr; }
-  }
-  @media (max-width: 640px) {
-    nav { padding: 1rem 1.4rem; }
-    .nav-links { display: none; }
-    section { padding: 5rem 1.4rem; }
-    .char-grid { grid-template-columns: 1fr; }
-    .tier-strip { grid-template-columns: 1fr; }
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="KESHA - India's Culture-Tech Platform for digital booking of sacred Vedic rituals, verified Pandits, and hassle-free ceremonies." />
+  <title>KESHA | Culture-Tech Ritual Services</title>
+  
+  <!-- Google Fonts: Cinzel (Headings) & Plus Jakarta Sans (Body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons for clean, zero-dependency traditional & social icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <nav>
-    <div class="logo">TEYVAT ARCHIVE</div>
-    <ul class="nav-links">
-      <li><a href="#featured">Featured</a></li>
-      <li><a href="#tiers">Tiers</a></li>
-      <li><a href="#philosophy">Philosophy</a></li>
-    </ul>
-  </nav>
 
-  <!-- HERO -->
-  <header class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-content">
-      <div class="hero-label">Version 7.0 · Stellar Shift</div>
-      <h1>Precision over<br><span>spectacle.</span></h1>
-      <p>A theorycrafting archive built for clarity. Every ranking justified. Every recommendation measured against real account value.</p>
-      <div class="hero-cta">
-        <a href="#featured" class="btn btn-primary">Explore Archive</a>
-        <a href="#tiers" class="btn btn-ghost">View Tiers</a>
+  <!-- ================= HEADER & NAVBAR ================= -->
+  <header class="navbar" id="navbar">
+    <div class="container nav-container">
+      <a href="#home" class="brand-logo">
+        <span class="logo-symbol">ॐ</span>
+        <span class="logo-text">KESHA</span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="nav-links">
+        <a href="#home">Home</a>
+        <a href="#about">About Us</a>
+        <a href="#services">Services</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#pandit-registration">Pandit Registration</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="https://wa.me/919999999999?text=Hi%20Kesha,%20I%20want%20to%20enquire%20about%20a%20ritual%20service." target="_blank" class="btn btn-primary btn-sm">
+          <i class="fa-brands fa-whatsapp"></i> Enquire on WhatsApp
+        </a>
+        <button class="hamburger-btn" id="hamburger-btn" aria-label="Open Navigation Menu">
+          <i class="fa-solid fa-bars"></i>
+        </button>
       </div>
     </div>
-    <div class="hero-visual">
-      <img src="https://images.unsplash.com/photo-1614850523459-c2f4e1463bc0?w=800&q=80" alt="Abstract premium visual" loading="eager">
+
+    <!-- Mobile Drawer -->
+    <div class="mobile-drawer" id="mobile-drawer">
+      <div class="drawer-header">
+        <div class="brand-logo">
+          <span class="logo-symbol">ॐ</span>
+          <span class="logo-text">KESHA</span>
+        </div>
+        <button class="close-drawer" id="close-drawer" aria-label="Close Navigation Menu">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <nav class="mobile-nav-links">
+        <a href="#home" class="mobile-nav-item">Home</a>
+        <a href="#about" class="mobile-nav-item">About Us</a>
+        <a href="#services" class="mobile-nav-item">Services</a>
+        <a href="#how-it-works" class="mobile-nav-item">How It Works</a>
+        <a href="#pandit-registration" class="mobile-nav-item">Pandit Registration</a>
+        <a href="#contact" class="mobile-nav-item">Contact</a>
+      </nav>
+      <div class="mobile-drawer-cta">
+        <a href="https://wa.me/919999999999?text=Hi%20Kesha,%20I%20want%20to%20enquire%20about%20a%20ritual%20service." target="_blank" class="btn btn-primary btn-full">
+          <i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp
+        </a>
+      </div>
     </div>
   </header>
 
-  <!-- FEATURED -->
-  <section id="featured">
-    <div class="section-label">01 — Spotlight</div>
-    <h2 class="section-title">Featured Carries</h2>
-    <p class="section-desc">The current ceiling of Version 7.0. Characters that define both combat performance and account investment value.</p>
-
-    <div class="char-grid">
-      <article class="char-card">
-        <div class="char-img-wrap">
-          <img src="https://images.unsplash.com/photo-1635322966219-b75ed372eb01?w=600&q=80" alt="Mavuika" loading="lazy">
+  <!-- ================= HERO SECTION ================= -->
+  <section class="hero-section" id="home">
+    <div class="container hero-grid">
+      <div class="hero-content">
+        <div class="tag-badge">
+          <span class="badge-dot"></span> Certified Vedic Traditions, Modern Reliability
         </div>
-        <div class="char-body">
-          <div class="char-meta">
-            <span class="tag ss">SS Tier</span>
-            <span class="tag element">Pyro</span>
+        <h1 class="hero-title">Plan Your Rituals <span class="highlight">Digitally</span></h1>
+        <p class="hero-subtitle">
+          Experience sacred Indian ceremonies with absolute peace of mind. Book verified Pandits, authentic puja samagri, and complete doorstep or holy pilgrimage coordination.
+        </p>
+        <div class="hero-cta-group">
+          <a href="#services" class="btn btn-primary btn-lg">Explore Services</a>
+          <a href="https://wa.me/919999999999?text=Hi%20Kesha,%20I%20want%20to%20enquire%20about%20a%20service." target="_blank" class="btn btn-outline btn-lg">
+            <i class="fa-brands fa-whatsapp"></i> Contact on WhatsApp
+          </a>
+        </div>
+        
+        <div class="hero-metrics">
+          <div class="metric-item">
+            <span class="metric-number">100%</span>
+            <span class="metric-label">Verified Pandits</span>
           </div>
-          <h3 class="char-name">Mavuika</h3>
-          <p class="char-role">Universal Offensive Engine · Nightsoul Hypercarry</p>
-        </div>
-      </article>
-
-      <article class="char-card">
-        <div class="char-img-wrap">
-          <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&q=80" alt="Sandrone" loading="lazy">
-        </div>
-        <div class="char-body">
-          <div class="char-meta">
-            <span class="tag ss">SS Tier</span>
-            <span class="tag element">Cryo</span>
+          <div class="metric-divider"></div>
+          <div class="metric-item">
+            <span class="metric-number">Pure</span>
+            <span class="metric-label">Vedic Samagri</span>
           </div>
-          <h3 class="char-name">Sandrone</h3>
-          <p class="char-role">Premier Stellar-Conduct On-Field Hypercarry</p>
-        </div>
-      </article>
-
-      <article class="char-card">
-        <div class="char-img-wrap">
-          <img src="https://images.unsplash.com/photo-1634016303086-3242c4d0c8d1?w=600&q=80" alt="Skirk" loading="lazy">
-        </div>
-        <div class="char-body">
-          <div class="char-meta">
-            <span class="tag ss">S Tier</span>
-            <span class="tag element">Cryo</span>
+          <div class="metric-divider"></div>
+          <div class="metric-item">
+            <span class="metric-number">Zero</span>
+            <span class="metric-label">Hidden Dakshina</span>
           </div>
-          <h3 class="char-name">Skirk</h3>
-          <p class="char-role">Fluid On-Field Freeze · Void Rift Anchor</p>
         </div>
-      </article>
-    </div>
-  </section>
+      </div>
 
-  <!-- TIERS -->
-  <section id="tiers">
-    <div class="section-label">02 — Hierarchy</div>
-    <h2 class="section-title">Tier Framework</h2>
-    <p class="section-desc">Power alone is not pull value. This archive separates combat ceiling from actual account efficiency.</p>
-
-    <div class="tier-strip">
-      <div class="tier-card">
-        <div class="tier-rank">SS</div>
-        <p>Pinnacle ceiling. Essential account value. Zero luxury redundancy.</p>
-      </div>
-      <div class="tier-card">
-        <div class="tier-rank">S</div>
-        <p>Extremely high output. Minor constraints or specialized pairings.</p>
-      </div>
-      <div class="tier-card">
-        <div class="tier-rank">A+</div>
-        <p>Tremendous ceiling moderated by strict reaction windows.</p>
-      </div>
-      <div class="tier-card">
-        <div class="tier-rank">A</div>
-        <p>Proven endgame carries with higher role competition.</p>
+      <div class="hero-visual">
+        <div class="ornate-card-wrapper">
+          <div class="ornate-border-frame">
+            <div class="hero-image-placeholder">
+              <i class="fa-solid fa-fire-burner ritual-icon-large"></i>
+              <h3 class="hero-card-title">Authentic Vedic Ceremonies</h3>
+              <p class="hero-card-desc">Conducted with correct Shastriya rituals, auspicious muhurat, and sacred traditions.</p>
+              <div class="decorative-mandala"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- PHILOSOPHY -->
-  <section id="philosophy">
-    <div class="philosophy">
-      <div class="philosophy-text">
-        <div class="section-label">03 — Core Rule</div>
-        <h2>Power ≠ Pull Value</h2>
-        <p>A character achieving top-tier DPS does not automatically make them a mandatory pull. If your account already owns an equivalent on-field carry, pulling is luxury redundancy.</p>
-        <p>This archive exists to prevent waste. Every recommendation is filtered through realistic C0 baselines, team synergy, and long-term account health.</p>
-      </div>
-      <div class="philosophy-visual">
-        <img src="https://images.unsplash.com/photo-1614850715649-1d0106293bd1?w=800&q=80" alt="Abstract" loading="lazy">
+  <!-- ================= INTRODUCTION SECTION ================= -->
+  <section class="intro-section" id="intro">
+    <div class="container">
+      <div class="section-badge-center">Culture-Tech Platform</div>
+      <h2 class="section-title text-center">Bridging Ancient Sacred Wisdom With Digital Ease</h2>
+      <p class="section-description text-center">
+        KESHA modernizes the way Indian families organize sacred milestones. From Mundan Sanskars to Griha Pravesh, we eliminate uncertainty, lack of transparency, and last-minute hassle.
+      </p>
+      
+      <div class="intro-cards-grid">
+        <div class="intro-card">
+          <div class="intro-icon-circle"><i class="fa-solid fa-om"></i></div>
+          <h3>Vedic Accuracy</h3>
+          <p>Every ritual follows canonical scriptures with shloka recitations explained in your family's mother tongue.</p>
+        </div>
+        <div class="intro-card">
+          <div class="intro-icon-circle"><i class="fa-solid fa-shield-halved"></i></div>
+          <h3>Verified Acharyas</h3>
+          <p>Rigorous background verification, pedigree validation, and Gurukul-trained Pandits.</p>
+        </div>
+        <div class="intro-card">
+          <div class="intro-icon-circle"><i class="fa-solid fa-box-open"></i></div>
+          <h3>Curated Samagri Kits</h3>
+          <p>Pre-packaged, chemical-free, lab-tested, and auspicious items delivered directly to the ceremony venue.</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <footer>
-    <p>Crafted with absolute precision by <span>Perfect Cell</span></p>
-    <p style="margin-top:0.4rem;opacity:0.55;font-size:0.8rem;">Not affiliated with HoYoverse. Demonstration of superior standards only.</p>
+  <!-- ================= ABOUT US ================= -->
+  <section class="about-section" id="about">
+    <div class="container about-grid">
+      <div class="about-text">
+        <div class="tag-badge">Our Mission</div>
+        <h2 class="section-title">Preserving Traditions, Empowering Families</h2>
+        <p class="about-lead">
+          In an era where fast-paced living makes traditional ritual planning stressful, KESHA was born to make sacred Indian ceremonies accessible, organized, and dignified.
+        </p>
+        <p class="about-subtext">
+          Whether you are celebrating your newborn’s first haircut ceremony (Mundan) in Haridwar, stepping into a new home, or seeking spiritual peace through Havans, KESHA acts as your dedicated digital caretaker from selecting the shubh muhurat to the final aarti.
+        </p>
+        <div class="values-list">
+          <div class="value-row">
+            <i class="fa-solid fa-circle-check"></i>
+            <div>
+              <strong>Complete Transparency:</strong> No unexpected demands on the day of the ceremony.
+            </div>
+          </div>
+          <div class="value-row">
+            <i class="fa-solid fa-circle-check"></i>
+            <div>
+              <strong>Dignity for Pandits:</strong> Fair remuneration and professional recognition for verified Vedic scholars.
+            </div>
+          </div>
+          <div class="value-row">
+            <i class="fa-solid fa-circle-check"></i>
+            <div>
+              <strong>Pan-India Accessibility:</strong> Book ceremonies at home or at holy pilgrimage locations like Varanasi, Ayodhya, and Rishikesh.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-stat-box">
+        <div class="sacred-quote-box">
+          <div class="quote-symbol">“</div>
+          <p class="quote-text">यत्र विश्वं भवत्येकनीडम् — Where the whole world meets in one nest of sacred culture.</p>
+          <div class="quote-author">— Vedic Philosophy</div>
+        </div>
+        <div class="contact-card-highlight">
+          <h4>Need guidance choosing a Muhurat?</h4>
+          <p>Speak directly with our senior ritual coordinators today.</p>
+          <a href="mailto:priyanshu@kesha.co.in" class="email-link">
+            <i class="fa-solid fa-envelope"></i> priyanshu@kesha.co.in
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SERVICES SECTION ================= -->
+  <section class="services-section" id="services">
+    <div class="container">
+      <div class="section-badge-center">Sacred Offerings</div>
+      <h2 class="section-title text-center">Comprehensive Ritual & Puja Services</h2>
+      <p class="section-description text-center">
+        Select a ceremony below to view details and immediately enquire via WhatsApp with our team.
+      </p>
+
+      <div class="services-grid">
+        <!-- Service Card 1 -->
+        <div class="service-card">
+          <div class="service-card-header">
+            <div class="service-icon"><i class="fa-solid fa-scissors"></i></div>
+            <span class="popular-tag">Specialty</span>
+          </div>
+          <h3 class="service-title">Mundan Sanskar (First Haircut)</h3>
+          <p class="service-desc">
+            Sacred purification rite for your child. Available at your home or at holy ghats in Haridwar, Prayagraj, and Varanasi with hygienic barbers and Vedic Pandits.
+          </p>
+          <ul class="service-highlights">
+            <li><i class="fa-solid fa-check"></i> Muhurat calculation included</li>
+            <li><i class="fa-solid fa-check"></i> Sanitized ritual kit & Ganga jal</li>
+            <li><i class="fa-solid fa-check"></i> Complete family blessing ritual</li>
+          </ul>
+          <a href="https://wa.me/919999999999?text=Hi%20Kesha,%20I%20want%20to%20enquire%20about%20Mundan%20Sanskar." target="_blank" class="btn btn-outline btn-full service-btn">
+            <i class="fa-brands fa-whatsapp"></i> Enquire for Mundan
+          </a>
+        </div>
+
+        <!-- Service Card 2 -->
+        <div class="service-card">
+          <div class="service-card-header">
+            <div class="service-icon"><i class="fa-solid fa-house-chimney"></i></div>
+          </div>
+          <h3 class="service-title">Griha Pravesh & Vastu Shanti</h3>
+          <p class="service-desc">
+            Purify your new residence and invite positive energies. Includes full Vastu Havan, Navgrah Puja, and Toran Sthapana.
+          </p>
+          <ul class="service-highlights">
+            <li><i class="fa-solid fa-check"></i> Experienced Vastu Shastri</li>
+            <li><i class="fa-solid fa-check"></i> 100% pure Havan Samagri</li>
+            <li><i class="fa-solid fa-check"></i> Copper Havan Kund provided</li>
+          </ul>
+          <a href="https://wa.me/919999999999?text=Hi%20Kesha,%20I%20want%20to%20enquire%20about%20Griha%20Pravesh%20Puja." target="_blank" class="btn btn-outline btn-full service-btn">
+            <i class="fa-brands fa-whatsapp"></i> Enquire for Griha Pravesh
+          </a>
+        </div>
+
+        <!-- Service Card 3 -->
+        <div class="service-card">
+          <div class="service-card-header">
+            <div class="service-icon"><i class="fa-solid fa-book-open-reader"></i></div>
+          </div>
+          <h3 class="service-title">Satyanarayan Katha</h3>
+          <p class="service-desc">
+            The revered narrative puja invoking Lord Vishnu’s blessings for family prosperity, joy, and resolution of obstacles.
+          </p>
+          <ul class="service-highlights">
+            <li><i class="fa-solid fa-check"></i> Full 5-Adhyay recitation</li>
+            <li><i class="fa-solid fa-check"></i> Prashad preparation instructions</li>
+            <li><i class="fa-solid fa-check"></i> Melodious Bhajan & Aarti</li>
+          </ul>
+          <a href="https://wa.me/919999999999?text=Hi%20Kesha,%20I%20want%20to%20enquire%20about%20Satyanarayan%20Katha." target="_blank" class="btn btn-outline btn-full service-btn">
+            <i class="fa-brands fa-whatsapp"></i> Enquire for Satyanarayan
+          </a>
+        </div>
+
+        <!-- Service Card 4 -->
+        <div class="service-card">
+          <div class="service-card-header">
+            <div class="service-icon"><i class="fa-solid fa-star-and-crescent"></i></div>
+          </div>
+          <h3 class="service-title">Navgrah Shanti Puja</h3>
+          <p class="service-desc">
+            Harmonize planetary alignments to shield your personal life, health, and business ventures from negative planetary transits.
+          </p>
+          <ul class="service-highlights">
+            <li><i class="fa-solid fa-check"></i> Detailed Kundli review</li>
+            <li><i class="fa-solid fa-check"></i> Specific grain and herb offerings</li>
+            <li><i class="fa-solid fa-check"></i> Customized mantra jaap</li>
+          </ul>
+          <a href="https://wa.me/919999999999?text=Hi%20Kesha,%20I%20want%20to%20enquire%20about%20Navgrah%20Shanti." target="_blank" class="btn btn-outline btn-full service-btn">
+            <i class="fa-brands fa-whatsapp"></i> Enquire for Navgrah Puja
+          </a>
+        </div>
+
+        <!-- Service Card 5 -->
+        <div class="service-card">
+          <div class="service-card-header">
+            <div class="service-icon"><i class="fa-solid fa-baby"></i></div>
+          </div>
+          <h3 class="service-title">Namkaran Sanskar (Naming)</h3>
+          <p class="service-desc">
+            Auspicious naming ceremony establishing identity, astrological alignment, and divine blessings for the newborn.
+          </p>
+          <ul class="service-highlights">
+            <li><i class="fa-solid fa-check"></i> Nakshatra & Charan matching</li>
+            <li><i class="fa-solid fa-check"></i> First letter determination</li>
+            <li><i class="fa-solid fa-check"></i> Mother & baby cleansing blessing</li>
+          </ul>
+          <a href="https://wa.me/919999999999?text=Hi%20Kesha,%20I%20want%20to%20enquire%20about%20Namkaran%20Sanskar." target="_blank" class="btn btn-outline btn-full service-btn">
+            <i class="fa-brands fa-whatsapp"></i> Enquire for Namkaran
+          </a>
+        </div>
+
+        <!-- Service Card 6 -->
+        <div class="service-card">
+          <div class="service-card-header">
+            <div class="service-icon"><i class="fa-solid fa-bell"></i></div>
+          </div>
+          <h3 class="service-title">Maha Mrityunjaya Jaap & Havan</h3>
+          <p class="service-desc">
+            Potent life-affirming Shiva recitation dedicated to recovery from prolonged illness, vitality, and longevity.
+          </p>
+          <ul class="service-highlights">
+            <li><i class="fa-solid fa-check"></i> Chanting by verified Acharyas</li>
+            <li><i class="fa-solid fa-check"></i> Sankalpa taken in family's name</li>
+            <li><i class="fa-solid fa-check"></i> Pure Cow Ghee & Herb Ahutis</li>
+          </ul>
+          <a href="https://wa.me/919999999999?text=Hi%20Kesha,%20I%20want%20to%20enquire%20about%20Maha%20Mrityunjaya%20Jaap." target="_blank" class="btn btn-outline btn-full service-btn">
+            <i class="fa-brands fa-whatsapp"></i> Enquire for Maha Mrityunjaya
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= HOW IT WORKS ================= -->
+  <section class="how-it-works-section" id="how-it-works">
+    <div class="container">
+      <div class="section-badge-center">Effortless Process</div>
+      <h2 class="section-title text-center">How KESHA Works in 3 Simple Steps</h2>
+      <p class="section-description text-center">
+        No bargaining, no uncertainty. Experience seamless Vedic ritual coordination.
+      </p>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-badge">Step 1</div>
+          <div class="step-icon-box"><i class="fa-regular fa-calendar-check"></i></div>
+          <h3>Select Service & Date</h3>
+          <p>Choose the ritual you need, your preferred city or home address, and share your date preferences.</p>
+        </div>
+
+        <div class="step-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+
+        <div class="step-card">
+          <div class="step-badge">Step 2</div>
+          <div class="step-icon-box"><i class="fa-solid fa-handshake-angle"></i></div>
+          <h3>Match With Verified Pandit</h3>
+          <p>We assign a background-verified Vedic Pandit suited to your language, community traditions, and sampradaya.</p>
+        </div>
+
+        <div class="step-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+
+        <div class="step-card">
+          <div class="step-badge">Step 3</div>
+          <div class="step-icon-box"><i class="fa-solid fa-hands-praying"></i></div>
+          <h3>Perform Ritual Hassle-Free</h3>
+          <p>The Pandit arrives punctually with the essential samagri kit. Perform the sacred ceremony with peace and fulfillment.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= WHY KESHA (TRUST BADGES) ================= -->
+  <section class="trust-section">
+    <div class="container">
+      <div class="trust-banner">
+        <div class="trust-content">
+          <h2 class="trust-title">Why Indian Families Trust KESHA</h2>
+          <p class="trust-sub">We treat sacred ceremonies with the reverence, precision, and honesty they deserve.</p>
+        </div>
+        <div class="trust-badges-grid">
+          <div class="trust-badge-item">
+            <i class="fa-solid fa-certificate"></i>
+            <div>
+              <h4>Authentic Vidhi</h4>
+              <p>Scriptural accuracy guaranteed.</p>
+            </div>
+          </div>
+          <div class="trust-badge-item">
+            <i class="fa-solid fa-hand-holding-dollar"></i>
+            <div>
+              <h4>Transparent Costs</h4>
+              <p>Clear, fixed pricing without surprises.</p>
+            </div>
+          </div>
+          <div class="trust-badge-item">
+            <i class="fa-solid fa-spa"></i>
+            <div>
+              <h4>Premium Samagri</h4>
+              <p>Chemical-free dhoop, pure roli & cow ghee.</p>
+            </div>
+          </div>
+          <div class="trust-badge-item">
+            <i class="fa-solid fa-headset"></i>
+            <div>
+              <h4>Dedicated Support</h4>
+              <p>Personal coordinator for every booking.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PANDIT REGISTRATION ================= -->
+  <section class="pandit-section" id="pandit-registration">
+    <div class="container">
+      <div class="pandit-wrapper">
+        <div class="pandit-info">
+          <div class="tag-badge">Vedic Scholar Network</div>
+          <h2 class="section-title">Are You a Qualified Pandit? Join KESHA</h2>
+          <p class="pandit-desc">
+            We invite reputable, Gurukul-trained Pandits and Acharyas to join our verified community. Get regular ceremonies, respectful compensation, and transparent digital scheduling.
+          </p>
+          <ul class="pandit-perks">
+            <li><i class="fa-solid fa-circle-check"></i> Guaranteed timely payouts without middlemen.</li>
+            <li><i class="fa-solid fa-circle-check"></i> Choose your working zones and schedule flexibility.</li>
+            <li><i class="fa-solid fa-circle-check"></i> Digital support and pre-arranged Samagri kits.</li>
+          </ul>
+          <div class="pandit-direct-note">
+            <i class="fa-solid fa-circle-info"></i> For direct verification queries, reach us at <strong>priyanshu@kesha.co.in</strong>
+          </div>
+        </div>
+
+        <div class="pandit-form-container">
+          <h3 class="form-title">Pandit Registration Form</h3>
+          <p class="form-subtitle">Fill in your details. Our verification team will get in touch within 24 hours.</p>
+
+          <!-- Form connects to Web3Forms without backend -->
+          <form class="custom-form" id="pandit-form" action="https://api.web3forms.com/submit" method="POST">
+            <!-- Hidden Access Key for Web3Forms -->
+            <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY_HERE" />
+            <input type="hidden" name="subject" value="New Pandit Registration - KESHA" />
+            <input type="hidden" name="from_name" value="KESHA Registration Portal" />
+
+            <div class="form-group">
+              <label for="p-name">Full Name *</label>
+              <input type="text" id="p-name" name="pandit_name" placeholder="Acharya / Pandit Name" required />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="p-phone">Phone / WhatsApp Number *</label>
+                <input type="tel" id="p-phone" name="pandit_phone" placeholder="+91 98765 43210" required />
+              </div>
+              <div class="form-group">
+                <label for="p-city">Current City & State *</label>
+                <input type="text" id="p-city" name="pandit_city" placeholder="e.g. Haridwar, Uttarakhand" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="p-experience">Years of Experience & Gurukul/Parampara *</label>
+              <input type="text" id="p-experience" name="pandit_experience" placeholder="e.g. 10 Years, Varanasi Sanskrit Vishwavidyalaya" required />
+            </div>
+
+            <div class="form-group">
+              <label for="p-specialization">Ritual Specialties *</label>
+              <input type="text" id="p-specialization" name="pandit_specialization" placeholder="e.g. Mundan, Griha Pravesh, Rudrabhishek" required />
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full">Submit Application</button>
+            <div class="form-message" id="pandit-form-status"></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FAQS ACCORDION ================= -->
+  <section class="faqs-section">
+    <div class="container">
+      <div class="section-badge-center">Common Inquiries</div>
+      <h2 class="section-title text-center">Frequently Asked Questions</h2>
+      <p class="section-description text-center">
+        Everything you need to know about our services and booking process.
+      </p>
+
+      <div class="accordion-container">
+        <div class="accordion-item">
+          <button class="accordion-header">
+            <span>How does KESHA verify Pandits?</span>
+            <i class="fa-solid fa-chevron-down accordion-icon"></i>
+          </button>
+          <div class="accordion-content">
+            <p>
+              Every Pandit on KESHA undergoes a thorough credential check including Gurukul education, ancestral parampara, knowledge of Vedic mantras, and background identity verification before taking ceremonies.
+            </p>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-header">
+            <span>Is the ritual Samagri included in the booking?</span>
+            <i class="fa-solid fa-chevron-down accordion-icon"></i>
+          </button>
+          <div class="accordion-content">
+            <p>
+              Yes! We provide complete, pure, and scripturally approved Samagri kits containing fresh herbs, dry fruits, roli, pure desi cow ghee, havan samagri, and decorative elements so your family doesn't have to scramble to markets.
+            </p>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-header">
+            <span>Can we organize Mundan ceremonies in Haridwar or Varanasi?</span>
+            <i class="fa-solid fa-chevron-down accordion-icon"></i>
+          </button>
+          <div class="accordion-content">
+            <p>
+              Absolutely. KESHA specializes in sacred destination ceremonies. We manage riverside ghat bookings, hygienic traditional barbers, pandit arrangements, and comfortable family guidance at prime pilgrimage spots.
+            </p>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-header">
+            <span>What if we need to reschedule our ceremony?</span>
+            <i class="fa-solid fa-chevron-down accordion-icon"></i>
+          </button>
+          <div class="accordion-content">
+            <p>
+              We understand that unforeseen events arise. You can reschedule your ceremony with up to 48 hours notice without any penalty fee by contacting your dedicated coordinator on WhatsApp.
+            </p>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-header">
+            <span>How are Dakshina and payments handled?</span>
+            <i class="fa-solid fa-chevron-down accordion-icon"></i>
+          </button>
+          <div class="accordion-content">
+            <p>
+              KESHA operates with zero ambiguity. The service fee you see covers the Pandit's dakshina, traveling, and samagri. You are never obligated or pressured to pay surprise fees during the vidhi.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CONTACT US ================= -->
+  <section class="contact-section" id="contact">
+    <div class="container contact-grid">
+      <div class="contact-details">
+        <div class="tag-badge">Get in Touch</div>
+        <h2 class="section-title">We’re Here to Assist Your Sacred Journey</h2>
+        <p class="contact-desc">
+          Have a custom ritual requirement or questions regarding an upcoming ceremony? Our team is always ready to guide you.
+        </p>
+
+        <div class="contact-info-list">
+          <div class="contact-info-card">
+            <i class="fa-solid fa-envelope"></i>
+            <div>
+              <h5>Official Email</h5>
+              <a href="mailto:priyanshu@kesha.co.in">priyanshu@kesha.co.in</a>
+            </div>
+          </div>
+
+          <div class="contact-info-card">
+            <i class="fa-brands fa-whatsapp"></i>
+            <div>
+              <h5>WhatsApp Assistance</h5>
+              <a href="https://wa.me/919999999999?text=Hi%20Kesha,%20I%20have%20an%20inquiry." target="_blank">Chat with our Coordinator</a>
+            </div>
+          </div>
+
+          <div class="contact-info-card">
+            <i class="fa-solid fa-globe"></i>
+            <div>
+              <h5>Official Portal</h5>
+              <span>kesha.co.in</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-form-container">
+        <h3 class="form-title">Send Us a Message</h3>
+        <p class="form-subtitle">Fill out this quick form and we'll reply to your email or WhatsApp promptly.</p>
+
+        <form class="custom-form" id="contact-form" action="https://api.web3forms.com/submit" method="POST">
+          <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY_HERE" />
+          <input type="hidden" name="subject" value="New Customer Inquiry - KESHA" />
+          <input type="hidden" name="from_name" value="KESHA Contact Form" />
+
+          <div class="form-group">
+            <label for="c-name">Your Full Name *</label>
+            <input type="text" id="c-name" name="customer_name" placeholder="Enter your full name" required />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="c-phone">Phone / WhatsApp *</label>
+              <input type="tel" id="c-phone" name="customer_phone" placeholder="+91 98765 43210" required />
+            </div>
+            <div class="form-group">
+              <label for="c-service">Service Required *</label>
+              <select id="c-service" name="service_type" required>
+                <option value="" disabled selected>Select a ritual</option>
+                <option value="Mundan Sanskar">Mundan Sanskar</option>
+                <option value="Griha Pravesh">Griha Pravesh & Vastu Shanti</option>
+                <option value="Satyanarayan Katha">Satyanarayan Katha</option>
+                <option value="Navgrah Shanti">Navgrah Shanti Puja</option>
+                <option value="Namkaran Sanskar">Namkaran Sanskar</option>
+                <option value="Maha Mrityunjaya">Maha Mrityunjaya Jaap</option>
+                <option value="Other / Custom">Other Custom Puja</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="c-message">Tell Us About Your Requirements *</label>
+            <textarea id="c-message" name="customer_message" rows="4" placeholder="Mention preferred dates, venue (City or Pilgrimage Site), or family specifications..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-full">Send Inquiry</button>
+          <div class="form-message" id="contact-form-status"></div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= BOTTOM CTA BANNER ================= -->
+  <section class="cta-banner-section">
+    <div class="container">
+      <div class="cta-banner-inner">
+        <h2>Ready to Celebrate Your Auspicious Day with Peace of Mind?</h2>
+        <p>Connect directly with our ritual planning expert on WhatsApp now.</p>
+        <a href="https://wa.me/919999999999?text=Hi%20Kesha,%20I%20am%20ready%20to%20plan%20my%20ritual." target="_blank" class="btn btn-gold btn-lg">
+          <i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp Instantly
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-col brand-col">
+        <div class="brand-logo">
+          <span class="logo-symbol">ॐ</span>
+          <span class="logo-text">KESHA</span>
+        </div>
+        <p class="footer-about">
+          KESHA is India’s premier culture-tech platform digitizing sacred Vedic ceremonies with transparency, purity, and certified pandits.
+        </p>
+        <p class="footer-contact-link">
+          <i class="fa-solid fa-envelope"></i> priyanshu@kesha.co.in
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Quick Links</h4>
+        <ul class="footer-links">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#services">Ritual Services</a></li>
+          <li><a href="#how-it-works">How It Works</a></li>
+          <li><a href="#pandit-registration">Pandit Registration</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Popular Rituals</h4>
+        <ul class="footer-links">
+          <li><a href="#services">Mundan Sanskar</a></li>
+          <li><a href="#services">Griha Pravesh</a></li>
+          <li><a href="#services">Satyanarayan Katha</a></li>
+          <li><a href="#services">Navgrah Shanti</a></li>
+          <li><a href="#services">Namkaran Sanskar</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Connect With Us</h4>
+        <p class="footer-social-text">Follow our sacred rituals and educational Vedic insights:</p>
+        <div class="social-icons">
+          <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="https://wa.me/919999999999" target="_blank" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+          <a href="mailto:priyanshu@kesha.co.in" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container footer-bottom-flex">
+        <p>&copy; 2026 KESHA (`kesha.co.in`). All rights reserved.</p>
+        <p>Preserving Indian Culture through Technology.</p>
+      </div>
+    </div>
   </footer>
 
-<script>
-  gsap.registerPlugin(ScrollTrigger);
+  <!-- ================= STICKY FLOATING WHATSAPP BUTTON ================= -->
+  <a href="https://wa.me/919999999999?text=Hi%20Kesha,%20I%20want%20to%20enquire%20about%20a%20ritual%20service." target="_blank" class="floating-whatsapp" aria-label="Quick WhatsApp Inquiry">
+    <i class="fa-brands fa-whatsapp"></i>
+    <span class="floating-tooltip">Chat with us</span>
+  </a>
 
-  // Hero entrance
-  const heroTl = gsap.timeline({ defaults: { ease: "power3.out" } });
-  heroTl
-    .to(".hero-label", { opacity: 1, y: 0, duration: 0.8, delay: 0.2 })
-    .to("h1", { opacity: 1, y: 0, duration: 1 }, "-=0.5")
-    .to(".hero p", { opacity: 1, y: 0, duration: 0.8 }, "-=0.6")
-    .to(".hero-cta", { opacity: 1, y: 0, duration: 0.7 }, "-=0.5")
-    .to(".hero-visual", { opacity: 1, x: 0, duration: 1.1 }, "-=0.9");
-
-  // Set initial states
-  gsap.set([".hero-label", "h1", ".hero p", ".hero-cta"], { y: 30 });
-  gsap.set(".hero-visual", { x: 60 });
-
-  // Character cards stagger
-  gsap.from(".char-card", {
-    scrollTrigger: {
-      trigger: ".char-grid",
-      start: "top 80%",
-    },
-    y: 50,
-    opacity: 0,
-    duration: 0.9,
-    stagger: 0.12,
-    ease: "power3.out"
-  });
-
-  // Tier cards
-  gsap.from(".tier-card", {
-    scrollTrigger: {
-      trigger: ".tier-strip",
-      start: "top 85%",
-    },
-    y: 40,
-    opacity: 0,
-    duration: 0.8,
-    stagger: 0.1,
-    ease: "power3.out"
-  });
-
-  // Philosophy section
-  gsap.from(".philosophy-text", {
-    scrollTrigger: {
-      trigger: ".philosophy",
-      start: "top 75%",
-    },
-    x: -40,
-    opacity: 0,
-    duration: 1,
-    ease: "power3.out"
-  });
-  gsap.from(".philosophy-visual", {
-    scrollTrigger: {
-      trigger: ".philosophy",
-      start: "top 75%",
-    },
-    x: 40,
-    opacity: 0,
-    duration: 1,
-    ease: "power3.out"
-  });
-</script>
+  <!-- Link script -->
+  <script src="script.js"></script>
 </body>
 </html>
