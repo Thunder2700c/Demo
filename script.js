@@ -6,37 +6,48 @@
 document.addEventListener('DOMContentLoaded', () => {
 
   // ------------------------------------------------------------------------
-  // 1. Mobile Drawer Navigation
+  // 1. Mobile Drawer Navigation (Guaranteed No-Leak / Pinch-Safe)
   // ------------------------------------------------------------------------
   const hamburgerBtn = document.getElementById('hamburger-btn');
   const closeDrawerBtn = document.getElementById('close-drawer');
   const mobileDrawer = document.getElementById('mobile-drawer');
+  const drawerOverlay = document.getElementById('drawer-overlay');
   const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
 
   function openDrawer() {
-    if (mobileDrawer) mobileDrawer.classList.add('active');
+    if (mobileDrawer) {
+      mobileDrawer.classList.add('active');
+      mobileDrawer.setAttribute('aria-hidden', 'false');
+    }
+    if (drawerOverlay) {
+      drawerOverlay.classList.add('active');
+    }
+    document.body.style.overflow = 'hidden';
   }
 
   function closeDrawer() {
-    if (mobileDrawer) mobileDrawer.classList.remove('active');
+    if (mobileDrawer) {
+      mobileDrawer.classList.remove('active');
+      mobileDrawer.setAttribute('aria-hidden', 'true');
+    }
+    if (drawerOverlay) {
+      drawerOverlay.classList.remove('active');
+    }
+    document.body.style.overflow = '';
   }
 
   if (hamburgerBtn) hamburgerBtn.addEventListener('click', openDrawer);
   if (closeDrawerBtn) closeDrawerBtn.addEventListener('click', closeDrawer);
+  if (drawerOverlay) drawerOverlay.addEventListener('click', closeDrawer);
 
   // Close drawer automatically when clicking any link
   mobileNavItems.forEach((item) => {
     item.addEventListener('click', closeDrawer);
   });
 
-  // Close drawer when clicking outside
-  document.addEventListener('click', (event) => {
-    if (
-      mobileDrawer &&
-      mobileDrawer.classList.contains('active') &&
-      !mobileDrawer.contains(event.target) &&
-      !hamburgerBtn.contains(event.target)
-    ) {
+  // Close on Escape key for accessibility
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && mobileDrawer && mobileDrawer.classList.contains('active')) {
       closeDrawer();
     }
   });
@@ -131,10 +142,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // ------------------------------------------------------------------------
   const navbar = document.getElementById('navbar');
   window.addEventListener('scroll', () => {
-    if (window.scrollY > 30) {
-      navbar.style.boxShadow = '0 4px 20px rgba(31, 31, 31, 0.08)';
-    } else {
-      navbar.style.boxShadow = 'none';
+    if (navbar) {
+      if (window.scrollY > 30) {
+        navbar.style.boxShadow = '0 4px 20px rgba(31, 31, 31, 0.08)';
+      } else {
+        navbar.style.boxShadow = 'none';
+      }
     }
   });
 
