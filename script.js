@@ -1,91 +1,12 @@
 // ==========================================================================
 // KESHA CULTURE-TECH PLATFORM - CLIENT JAVASCRIPT
-// Handles: Mobile Drawer, Accordions, Dynamic Forms (Web3Forms), Smooth Scroll
+// Handles: Web3Forms Contact Form Handler & Sticky Navbar Elevation
 // ==========================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
 
   // ------------------------------------------------------------------------
-  // 1. Mobile Drawer Navigation (Guaranteed No-Leak / Pinch-Safe)
-  // ------------------------------------------------------------------------
-  const hamburgerBtn = document.getElementById('hamburger-btn');
-  const closeDrawerBtn = document.getElementById('close-drawer');
-  const mobileDrawer = document.getElementById('mobile-drawer');
-  const drawerOverlay = document.getElementById('drawer-overlay');
-  const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
-
-  function openDrawer() {
-    if (mobileDrawer) {
-      mobileDrawer.classList.add('active');
-      mobileDrawer.setAttribute('aria-hidden', 'false');
-    }
-    if (drawerOverlay) {
-      drawerOverlay.classList.add('active');
-    }
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeDrawer() {
-    if (mobileDrawer) {
-      mobileDrawer.classList.remove('active');
-      mobileDrawer.setAttribute('aria-hidden', 'true');
-    }
-    if (drawerOverlay) {
-      drawerOverlay.classList.remove('active');
-    }
-    document.body.style.overflow = '';
-  }
-
-  if (hamburgerBtn) hamburgerBtn.addEventListener('click', openDrawer);
-  if (closeDrawerBtn) closeDrawerBtn.addEventListener('click', closeDrawer);
-  if (drawerOverlay) drawerOverlay.addEventListener('click', closeDrawer);
-
-  // Close drawer automatically when clicking any link
-  mobileNavItems.forEach((item) => {
-    item.addEventListener('click', closeDrawer);
-  });
-
-  // Close on Escape key for accessibility
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && mobileDrawer && mobileDrawer.classList.contains('active')) {
-      closeDrawer();
-    }
-  });
-
-
-  // ------------------------------------------------------------------------
-  // 2. FAQ Accordion Interaction
-  // ------------------------------------------------------------------------
-  const accordionItems = document.querySelectorAll('.accordion-item');
-
-  accordionItems.forEach((item) => {
-    const header = item.querySelector('.accordion-header');
-    const content = item.querySelector('.accordion-content');
-
-    header.addEventListener('click', () => {
-      const isActive = item.classList.contains('active');
-
-      // Close all other accordions for clean single-item expansion
-      accordionItems.forEach((otherItem) => {
-        otherItem.classList.remove('active');
-        const otherContent = otherItem.querySelector('.accordion-content');
-        if (otherContent) otherContent.style.maxHeight = null;
-      });
-
-      // Toggle clicked accordion
-      if (!isActive) {
-        item.classList.add('active');
-        content.style.maxHeight = content.scrollHeight + 'px';
-      } else {
-        item.classList.remove('active');
-        content.style.maxHeight = null;
-      }
-    });
-  });
-
-
-  // ------------------------------------------------------------------------
-  // 3. Web3Forms Form Submission Handlers (No Server Needed)
+  // 1. Web3Forms Form Submission Handler (Contact Form)
   // ------------------------------------------------------------------------
   function setupFormHandler(formId, statusId) {
     const form = document.getElementById(formId);
@@ -132,13 +53,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Bind forms
-  setupFormHandler('pandit-form', 'pandit-form-status');
+  // Initialize Contact Form
   setupFormHandler('contact-form', 'contact-form-status');
 
 
   // ------------------------------------------------------------------------
-  // 4. Sticky Header Shadow on Scroll
+  // 2. Sticky Header Shadow on Scroll
   // ------------------------------------------------------------------------
   const navbar = document.getElementById('navbar');
   window.addEventListener('scroll', () => {
