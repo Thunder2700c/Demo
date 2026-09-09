@@ -14,9 +14,14 @@
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   
+  <!-- Main Stylesheet -->
   <link rel="stylesheet" href="style.css" />
+
+  <!-- Alpine.js Plugins & Core CDN -->
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-<body>
+<body x-data="{ drawerOpen: false }" x-effect="document.body.style.overflow = drawerOpen ? 'hidden' : ''">
 
   <!-- ================= HEADER & NAVBAR ================= -->
   <header class="navbar" id="navbar">
@@ -32,15 +37,14 @@
         <a href="#about">About Us</a>
         <a href="#services">Services</a>
         <a href="#how-it-works">How It Works</a>
-        <a href="#pandit-registration">Pandit Registration</a>
         <a href="#contact">Contact</a>
       </nav>
 
       <div class="nav-actions">
-        <a href="https://wa.me/919999999999?text=Hi%20Kesha,%20I%20want%20to%20enquire%20about%20a%20ritual%20service." target="_blank" class="btn btn-primary btn-sm">
+        <a href="https://wa.me/918054307242?text=Hi%20Kesha,%20I%20want%20to%20enquire%20about%20a%20ritual%20service." target="_blank" class="btn btn-primary btn-sm">
           <i class="fa-brands fa-whatsapp"></i> Enquire on WhatsApp
         </a>
-        <button class="hamburger-btn" id="hamburger-btn" aria-label="Open Navigation Menu">
+        <button class="hamburger-btn" id="hamburger-btn" @click="drawerOpen = true" aria-label="Open Navigation Menu">
           <i class="fa-solid fa-bars"></i>
         </button>
       </div>
@@ -48,29 +52,35 @@
   </header>
 
   <!-- Mobile Drawer Overlay Backdrop -->
-  <div class="drawer-overlay" id="drawer-overlay"></div>
+  <div class="drawer-overlay" 
+       :class="{ 'active': drawerOpen }" 
+       @click="drawerOpen = false" 
+       x-cloak></div>
 
   <!-- Mobile Drawer -->
-  <div class="mobile-drawer" id="mobile-drawer" aria-hidden="true">
+  <div class="mobile-drawer" 
+       :class="{ 'active': drawerOpen }" 
+       @keydown.escape.window="drawerOpen = false" 
+       aria-hidden="true" 
+       x-cloak>
     <div class="drawer-header">
       <div class="brand-logo">
         <span class="logo-symbol">ॐ</span>
         <span class="logo-text">KESHA</span>
       </div>
-      <button class="close-drawer" id="close-drawer" aria-label="Close Navigation Menu">
+      <button class="close-drawer" id="close-drawer" @click="drawerOpen = false" aria-label="Close Navigation Menu">
         <i class="fa-solid fa-xmark"></i>
       </button>
     </div>
     <nav class="mobile-nav-links">
-      <a href="#home" class="mobile-nav-item">Home</a>
-      <a href="#about" class="mobile-nav-item">About Us</a>
-      <a href="#services" class="mobile-nav-item">Services</a>
-      <a href="#how-it-works" class="mobile-nav-item">How It Works</a>
-      <a href="#pandit-registration" class="mobile-nav-item">Pandit Registration</a>
-      <a href="#contact" class="mobile-nav-item">Contact</a>
+      <a href="#home" class="mobile-nav-item" @click="drawerOpen = false">Home</a>
+      <a href="#about" class="mobile-nav-item" @click="drawerOpen = false">About Us</a>
+      <a href="#services" class="mobile-nav-item" @click="drawerOpen = false">Services</a>
+      <a href="#how-it-works" class="mobile-nav-item" @click="drawerOpen = false">How It Works</a>
+      <a href="#contact" class="mobile-nav-item" @click="drawerOpen = false">Contact</a>
     </nav>
     <div class="mobile-drawer-cta">
-      <a href="https://wa.me/919999999999?text=Hi%20Kesha,%20I%20want%20to%20enquire%20about%20a%20ritual%20service." target="_blank" class="btn btn-primary btn-full">
+      <a href="https://wa.me/918054307242?text=Hi%20Kesha,%20I%20want%20to%20enquire%20about%20a%20ritual%20service." target="_blank" class="btn btn-primary btn-full">
         <i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp
       </a>
     </div>
@@ -89,7 +99,7 @@
         </p>
         <div class="hero-cta-group">
           <a href="#services" class="btn btn-primary btn-lg">Explore Services</a>
-          <a href="https://wa.me/919999999999?text=Hi%20Kesha,%20I%20want%20to%20enquire%20about%20a%20service." target="_blank" class="btn btn-outline btn-lg">
+          <a href="https://wa.me/918054307242?text=Hi%20Kesha,%20I%20want%20to%20enquire%20about%20a%20service." target="_blank" class="btn btn-outline btn-lg">
             <i class="fa-brands fa-whatsapp"></i> Contact on WhatsApp
           </a>
         </div>
@@ -232,7 +242,7 @@
             <li><i class="fa-solid fa-check"></i> Sanitized ritual kit & Ganga jal</li>
             <li><i class="fa-solid fa-check"></i> Complete family blessing ritual</li>
           </ul>
-          <a href="https://wa.me/919999999999?text=Hi%20Kesha,%20I%20want%20to%20enquire%20about%20Mundan%20Sanskar." target="_blank" class="btn btn-outline btn-full service-btn">
+          <a href="https://wa.me/918054307242?text=Hi%20Kesha,%20I%20want%20to%20enquire%20about%20Mundan%20Sanskar." target="_blank" class="btn btn-outline btn-full service-btn">
             <i class="fa-brands fa-whatsapp"></i> Enquire for Mundan
           </a>
         </div>
@@ -251,7 +261,7 @@
             <li><i class="fa-solid fa-check"></i> 100% pure Havan Samagri</li>
             <li><i class="fa-solid fa-check"></i> Copper Havan Kund provided</li>
           </ul>
-          <a href="https://wa.me/919999999999?text=Hi%20Kesha,%20I%20want%20to%20enquire%20about%20Griha%20Pravesh%20Puja." target="_blank" class="btn btn-outline btn-full service-btn">
+          <a href="https://wa.me/918054307242?text=Hi%20Kesha,%20I%20want%20to%20enquire%20about%20Griha%20Pravesh%20Puja." target="_blank" class="btn btn-outline btn-full service-btn">
             <i class="fa-brands fa-whatsapp"></i> Enquire for Griha Pravesh
           </a>
         </div>
@@ -270,7 +280,7 @@
             <li><i class="fa-solid fa-check"></i> Prashad preparation instructions</li>
             <li><i class="fa-solid fa-check"></i> Melodious Bhajan & Aarti</li>
           </ul>
-          <a href="https://wa.me/919999999999?text=Hi%20Kesha,%20I%20want%20to%20enquire%20about%20Satyanarayan%20Katha." target="_blank" class="btn btn-outline btn-full service-btn">
+          <a href="https://wa.me/918054307242?text=Hi%20Kesha,%20I%20want%20to%20enquire%20about%20Satyanarayan%20Katha." target="_blank" class="btn btn-outline btn-full service-btn">
             <i class="fa-brands fa-whatsapp"></i> Enquire for Satyanarayan
           </a>
         </div>
@@ -289,7 +299,7 @@
             <li><i class="fa-solid fa-check"></i> Specific grain and herb offerings</li>
             <li><i class="fa-solid fa-check"></i> Customized mantra jaap</li>
           </ul>
-          <a href="https://wa.me/919999999999?text=Hi%20Kesha,%20I%20want%20to%20enquire%20about%20Navgrah%20Shanti." target="_blank" class="btn btn-outline btn-full service-btn">
+          <a href="https://wa.me/918054307242?text=Hi%20Kesha,%20I%20want%20to%20enquire%20about%20Navgrah%20Shanti." target="_blank" class="btn btn-outline btn-full service-btn">
             <i class="fa-brands fa-whatsapp"></i> Enquire for Navgrah Puja
           </a>
         </div>
@@ -308,7 +318,7 @@
             <li><i class="fa-solid fa-check"></i> First letter determination</li>
             <li><i class="fa-solid fa-check"></i> Mother & baby cleansing blessing</li>
           </ul>
-          <a href="https://wa.me/919999999999?text=Hi%20Kesha,%20I%20want%20to%20enquire%20about%20Namkaran%20Sanskar." target="_blank" class="btn btn-outline btn-full service-btn">
+          <a href="https://wa.me/918054307242?text=Hi%20Kesha,%20I%20want%20to%20enquire%20about%20Namkaran%20Sanskar." target="_blank" class="btn btn-outline btn-full service-btn">
             <i class="fa-brands fa-whatsapp"></i> Enquire for Namkaran
           </a>
         </div>
@@ -327,7 +337,7 @@
             <li><i class="fa-solid fa-check"></i> Sankalpa taken in family's name</li>
             <li><i class="fa-solid fa-check"></i> Pure Cow Ghee & Herb Ahutis</li>
           </ul>
-          <a href="https://wa.me/919999999999?text=Hi%20Kesha,%20I%20want%20to%20enquire%20about%20Maha%20Mrityunjaya%20Jaap." target="_blank" class="btn btn-outline btn-full service-btn">
+          <a href="https://wa.me/918054307242?text=Hi%20Kesha,%20I%20want%20to%20enquire%20about%20Maha%20Mrityunjaya%20Jaap." target="_blank" class="btn btn-outline btn-full service-btn">
             <i class="fa-brands fa-whatsapp"></i> Enquire for Maha Mrityunjaya
           </a>
         </div>
@@ -415,70 +425,7 @@
     </div>
   </section>
 
-  <!-- ================= PANDIT REGISTRATION ================= -->
-  <section class="pandit-section" id="pandit-registration">
-    <div class="container">
-      <div class="pandit-wrapper">
-        <div class="pandit-info">
-          <div class="tag-badge">Vedic Scholar Network</div>
-          <h2 class="section-title">Are You a Qualified Pandit? Join KESHA</h2>
-          <p class="pandit-desc">
-            We invite reputable, Gurukul-trained Pandits and Acharyas to join our verified community. Get regular ceremonies, respectful compensation, and transparent digital scheduling.
-          </p>
-          <ul class="pandit-perks">
-            <li><i class="fa-solid fa-circle-check"></i> Guaranteed timely payouts without middlemen.</li>
-            <li><i class="fa-solid fa-circle-check"></i> Choose your working zones and schedule flexibility.</li>
-            <li><i class="fa-solid fa-circle-check"></i> Digital support and pre-arranged Samagri kits.</li>
-          </ul>
-          <div class="pandit-direct-note">
-            <i class="fa-solid fa-circle-info"></i> For direct verification queries, reach us at <strong>priyanshu@kesha.co.in</strong>
-          </div>
-        </div>
-
-        <div class="pandit-form-container">
-          <h3 class="form-title">Pandit Registration Form</h3>
-          <p class="form-subtitle">Fill in your details. Our verification team will get in touch within 24 hours.</p>
-
-          <form class="custom-form" id="pandit-form" action="https://api.web3forms.com/submit" method="POST">
-            <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY_HERE" />
-            <input type="hidden" name="subject" value="New Pandit Registration - KESHA" />
-            <input type="hidden" name="from_name" value="KESHA Registration Portal" />
-
-            <div class="form-group">
-              <label for="p-name">Full Name *</label>
-              <input type="text" id="p-name" name="pandit_name" placeholder="Acharya / Pandit Name" required />
-            </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label for="p-phone">Phone / WhatsApp Number *</label>
-                <input type="tel" id="p-phone" name="pandit_phone" placeholder="+91 98765 43210" required />
-              </div>
-              <div class="form-group">
-                <label for="p-city">Current City & State *</label>
-                <input type="text" id="p-city" name="pandit_city" placeholder="e.g. Haridwar, Uttarakhand" required />
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="p-experience">Years of Experience & Gurukul/Parampara *</label>
-              <input type="text" id="p-experience" name="pandit_experience" placeholder="e.g. 10 Years, Varanasi Sanskrit Vishwavidyalaya" required />
-            </div>
-
-            <div class="form-group">
-              <label for="p-specialization">Ritual Specialties *</label>
-              <input type="text" id="p-specialization" name="pandit_specialization" placeholder="e.g. Mundan, Griha Pravesh, Rudrabhishek" required />
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-full">Submit Application</button>
-            <div class="form-message" id="pandit-form-status"></div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= FAQS ACCORDION ================= -->
+  <!-- ================= FAQS ACCORDION (ALPINE.JS) ================= -->
   <section class="faqs-section">
     <div class="container">
       <div class="section-badge-center">Common Inquiries</div>
@@ -487,61 +434,66 @@
         Everything you need to know about our services and booking process.
       </p>
 
-      <div class="accordion-container">
-        <div class="accordion-item">
-          <button class="accordion-header">
+      <div class="accordion-container" x-data="{ active: null }">
+        <!-- FAQ Item 1 -->
+        <div class="accordion-item" :class="{ 'active': active === 1 }">
+          <button type="button" class="accordion-header" @click="active = active === 1 ? null : 1">
             <span>How does KESHA verify Pandits?</span>
             <i class="fa-solid fa-chevron-down accordion-icon"></i>
           </button>
-          <div class="accordion-content">
+          <div class="accordion-content" x-show="active === 1" x-collapse>
             <p>
               Every Pandit on KESHA undergoes a thorough credential check including Gurukul education, ancestral parampara, knowledge of Vedic mantras, and background identity verification before taking ceremonies.
             </p>
           </div>
         </div>
 
-        <div class="accordion-item">
-          <button class="accordion-header">
+        <!-- FAQ Item 2 -->
+        <div class="accordion-item" :class="{ 'active': active === 2 }">
+          <button type="button" class="accordion-header" @click="active = active === 2 ? null : 2">
             <span>Is the ritual Samagri included in the booking?</span>
             <i class="fa-solid fa-chevron-down accordion-icon"></i>
           </button>
-          <div class="accordion-content">
+          <div class="accordion-content" x-show="active === 2" x-collapse>
             <p>
               Yes! We provide complete, pure, and scripturally approved Samagri kits containing fresh herbs, dry fruits, roli, pure desi cow ghee, havan samagri, and decorative elements so your family doesn't have to scramble to markets.
             </p>
           </div>
         </div>
 
-        <div class="accordion-item">
-          <button class="accordion-header">
+        <!-- FAQ Item 3 -->
+        <div class="accordion-item" :class="{ 'active': active === 3 }">
+          <button type="button" class="accordion-header" @click="active = active === 3 ? null : 3">
             <span>Can we organize Mundan ceremonies in Haridwar or Varanasi?</span>
             <i class="fa-solid fa-chevron-down accordion-icon"></i>
           </button>
-          <div class="accordion-content">
+          <div class="accordion-content" x-show="active === 3" x-collapse>
             <p>
               Absolutely. KESHA specializes in sacred destination ceremonies. We manage riverside ghat bookings, hygienic traditional barbers, pandit arrangements, and comfortable family guidance at prime pilgrimage spots.
             </p>
           </div>
         </div>
 
-        <div class="accordion-item">
-          <button class="accordion-header">
+        <!-- FAQ Item 4 -->
+        <div class="accordion-item" :class="{ 'active': active === 4 }">
+          <button type="button" class="accordion-header" @click="active = active === 4 ? null : 4">
             <span>What if we need to reschedule our ceremony?</span>
             <i class="fa-solid fa-chevron-down accordion-icon"></i>
           </button>
-          <div class="accordion-content">
+          <div class="accordion-content" x-show="active === 4" x-collapse>
             <p>
               We understand that unforeseen events arise. You can reschedule your ceremony with up to 48 hours notice without any penalty fee by contacting your dedicated coordinator on WhatsApp.
             </p>
           </div>
         </div>
 
-        <div class="accordion-item">
-          <button class="accordion-header">
+        <!-- FAQ Item 5 -->
+        <div class="accordion-item" :class="{ 'active': active === 5 }">
+          <button type="button" class="accordion-header" @click="active = active === 5 ? null : 5">
             <span>How are Dakshina and payments handled?</span>
             <i class="fa-solid fa-chevron-down accordion-icon"></i>
           </button>
-          <div class="accordion-content">
+          <div class="accordion-content" x-show="active === 5" x-collapse>
             <p>
               KESHA operates with zero ambiguity. The service fee you see covers the Pandit's dakshina, traveling, and samagri. You are never obligated or pressured to pay surprise fees during the vidhi.
             </p>
@@ -574,7 +526,15 @@
             <i class="fa-brands fa-whatsapp"></i>
             <div>
               <h5>WhatsApp Assistance</h5>
-              <a href="https://wa.me/919999999999?text=Hi%20Kesha,%20I%20have%20an%20inquiry." target="_blank">Chat with our Coordinator</a>
+              <a href="https://wa.me/918054307242?text=Hi%20Kesha,%20I%20have%20an%20inquiry." target="_blank">+91 80543 07242</a>
+            </div>
+          </div>
+
+          <div class="contact-info-card">
+            <i class="fa-solid fa-phone"></i>
+            <div>
+              <h5>Phone Support</h5>
+              <a href="tel:+918054307242">+91 80543 07242</a>
             </div>
           </div>
 
@@ -605,7 +565,7 @@
           <div class="form-row">
             <div class="form-group">
               <label for="c-phone">Phone / WhatsApp *</label>
-              <input type="tel" id="c-phone" name="customer_phone" placeholder="+91 98765 43210" required />
+              <input type="tel" id="c-phone" name="customer_phone" placeholder="+91 80543 07242" required />
             </div>
             <div class="form-group">
               <label for="c-service">Service Required *</label>
@@ -640,7 +600,7 @@
       <div class="cta-banner-inner">
         <h2>Ready to Celebrate Your Auspicious Day with Peace of Mind?</h2>
         <p>Connect directly with our ritual planning expert on WhatsApp now.</p>
-        <a href="https://wa.me/919999999999?text=Hi%20Kesha,%20I%20am%20ready%20to%20plan%20my%20ritual." target="_blank" class="btn btn-gold btn-lg">
+        <a href="https://wa.me/918054307242?text=Hi%20Kesha,%20I%20am%20ready%20to%20plan%20my%20ritual." target="_blank" class="btn btn-gold btn-lg">
           <i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp Instantly
         </a>
       </div>
@@ -670,7 +630,6 @@
           <li><a href="#about">About Us</a></li>
           <li><a href="#services">Ritual Services</a></li>
           <li><a href="#how-it-works">How It Works</a></li>
-          <li><a href="#pandit-registration">Pandit Registration</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
       </div>
@@ -692,7 +651,7 @@
         <div class="social-icons">
           <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
           <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-          <a href="https://wa.me/919999999999" target="_blank" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+          <a href="https://wa.me/918054307242" target="_blank" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
           <a href="mailto:priyanshu@kesha.co.in" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
         </div>
       </div>
@@ -700,18 +659,19 @@
 
     <div class="footer-bottom">
       <div class="container footer-bottom-flex">
-        <p>&copy; 2026 KESHA (kesha.co.in). All rights reserved.</p>
+        <p>&copy; 2026 KESHA (`kesha.co.in`). All rights reserved.</p>
         <p>Preserving Indian Culture through Technology.</p>
       </div>
     </div>
   </footer>
 
   <!-- ================= STICKY FLOATING WHATSAPP BUTTON ================= -->
-  <a href="https://wa.me/919999999999?text=Hi%20Kesha,%20I%20want%20to%20enquire%20about%20a%20ritual%20service." target="_blank" class="floating-whatsapp" aria-label="Quick WhatsApp Inquiry">
+  <a href="https://wa.me/918054307242?text=Hi%20Kesha,%20I%20want%20to%20enquire%20about%20a%20ritual%20service." target="_blank" class="floating-whatsapp" aria-label="Quick WhatsApp Inquiry">
     <i class="fa-brands fa-whatsapp"></i>
     <span class="floating-tooltip">Chat with us</span>
   </a>
 
+  <!-- Link Client Scripts -->
   <script src="script.js"></script>
 </body>
 </html>
