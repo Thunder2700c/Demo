@@ -681,7 +681,7 @@ img {
 }
 
 /* ==========================================================================
-   SERVICES SECTION
+   SERVICES SECTION (Balanced 2x2 Grid)
    ========================================================================== */
 .services-section {
   padding: 100px 0;
@@ -691,7 +691,7 @@ img {
 
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 30px;
 }
 
@@ -699,7 +699,7 @@ img {
   background-color: var(--bg-cream);
   border: 1px solid var(--border-subtle);
   border-radius: 12px;
-  padding: 32px 26px;
+  padding: 36px 30px;
   display: flex;
   flex-direction: column;
   transition: var(--transition);
@@ -1294,7 +1294,7 @@ img {
     gap: 40px;
   }
   
-  .services-grid, .intro-cards-grid {
+  .intro-cards-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
