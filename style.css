@@ -510,49 +510,36 @@ img {
   flex-shrink: 0;
 }
 
+/* Hero Visual & Image Card */
 .hero-visual {
   width: 100%;
   max-width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
-.ornate-card-wrapper {
+.hero-card-wrapper {
   position: relative;
-  padding: 10px;
-  background: linear-gradient(135deg, rgba(212, 175, 55, 0.4), rgba(139, 38, 19, 0.2));
-  border-radius: 16px;
-  box-shadow: var(--shadow-lg);
   width: 100%;
-  box-sizing: border-box;
+  max-width: 440px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.ornate-border-frame {
-  background-color: var(--bg-pure-white);
-  border: 2px solid var(--border-gold);
-  border-radius: 12px;
-  padding: 36px 20px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
+.hero-card-img {
   width: 100%;
-  box-sizing: border-box;
+  height: auto;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(139, 38, 19, 0.12);
+  display: block;
+  object-fit: contain;
+  transition: var(--transition);
 }
 
-.ritual-icon-large {
-  font-size: 3.5rem;
-  color: var(--accent-gold);
-  margin-bottom: 16px;
-}
-
-.hero-card-title {
-  font-size: 1.45rem;
-  margin-bottom: 10px;
-}
-
-.hero-card-desc {
-  font-size: 0.92rem;
-  color: var(--text-muted);
-  max-width: 300px;
-  margin: 0 auto;
+.hero-card-img:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 36px rgba(139, 38, 19, 0.18);
 }
 
 /* ==========================================================================
@@ -1411,7 +1398,6 @@ img {
     width: 100%;
   }
 
-  /* Fixed Mobile Metrics: Fits fully inside without right-edge clip */
   .hero-metrics {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -1431,6 +1417,11 @@ img {
   .metric-label {
     font-size: 0.72rem;
     white-space: normal;
+  }
+
+  .hero-card-wrapper {
+    max-width: 340px;
+    margin: 0 auto;
   }
 
   .services-grid, .intro-cards-grid {
